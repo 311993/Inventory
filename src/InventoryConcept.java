@@ -8,7 +8,7 @@ import java.util.TreeMap;
  *
  * @author David Stuckey
  */
-public class InventoryProofOfConcept {
+public class InventoryConcept {
 
     /** The primary representation variable. */
     private ArrayList<Item> slots;
@@ -17,7 +17,7 @@ public class InventoryProofOfConcept {
      * Constructs an Inventory with no slots. This should never be called from
      * outside the other constructor of this class so it is made private.
      */
-    private InventoryProofOfConcept() {
+    private InventoryConcept() {
         this.slots = new ArrayList<Item>();
     }
 
@@ -27,7 +27,7 @@ public class InventoryProofOfConcept {
      * @param size
      *            the number of slots in {@code this}
      */
-    public InventoryProofOfConcept(int size) {
+    public InventoryConcept(int size) {
         this();
 
         for (int i = 0; i < size; i++) {
@@ -102,10 +102,10 @@ public class InventoryProofOfConcept {
         }
 
         if (!hasItem) {
-            i = -1;
+            i = 0;
         }
 
-        return i;
+        return i - 1;
     }
 
     /**
@@ -130,6 +130,31 @@ public class InventoryProofOfConcept {
         Item removed = this.removeItem(slot);
         this.addItem(slot, removed);
         return removed;
+    }
+
+    /**
+     * Adds a copy of an item in another Inventory to {@code this}.
+     *
+     * @param src
+     *            the source Inventory
+     * @param name
+     *            the slot to get the item from
+     * @param destSlot
+     *            where to place the copied Item in {@code this}
+     * @requires an Item with name {@code name} is in {@code src}, destSlot
+     *           isEmpty
+     */
+    public void copyItem(InventoryConcept src, String name, int destSlot) {
+        Item copy = new Item();
+        Item original = src.getItem(src.nextIndexOf(name, 0));
+
+        copy.name = original.name;
+
+        for (Map.Entry<String, Integer> tag : original.tags.entrySet()) {
+            copy.putTag(tag.getKey(), tag.getValue());
+        }
+
+        this.addItem(destSlot, copy);
     }
 
     /**
@@ -160,8 +185,7 @@ public class InventoryProofOfConcept {
      * @param destSlot
      *            the slot in {@code this}
      */
-    public void swapItems(InventoryProofOfConcept src, int srcSlot,
-            int destSlot) {
+    public void swapItems(InventoryConcept src, int srcSlot, int destSlot) {
 
         Item srcRemoved = src.removeItem(srcSlot);
         Item destRemoved = this.removeItem(destSlot);
@@ -183,7 +207,7 @@ public class InventoryProofOfConcept {
      *            the slot in {@code this} to place the item at
      * @return true if the Item is successfully placed, or false otherwise
      */
-    public boolean transferItem(InventoryProofOfConcept src, int srcSlot,
+    public boolean transferItem(InventoryConcept src, int srcSlot,
             int destSlot) {
 
         Item srcRemoved = src.removeItem(srcSlot);
@@ -229,10 +253,11 @@ public class InventoryProofOfConcept {
                 if (this.getItem(pos).tagValue(Item.COUNT) < maxStack) {
                     doneCheckingStacks = true;
                 } else {
-                    checkAt = pos;
+                    checkAt = pos + 1;
                 }
 
-            } else {
+            }
+            if (pos < 0 || checkAt >= this.size() - 1) {
                 doneCheckingStacks = true;
             }
         }
@@ -398,48 +423,90 @@ final class Main {
 
         //Construct demo vars
         final int ten = 10;
-        InventoryProofOfConcept inv1 = new InventoryProofOfConcept(ten);
-        InventoryProofOfConcept inv2 = new InventoryProofOfConcept(1);
+        final int three = 3;
+        InventoryConcept inv1 = new InventoryConcept(ten);
+        InventoryConcept inv2 = new InventoryConcept(three);
 
         //Add items to slots of first inventory
         System.out.println("Items in Inventory 1:");
 
+        String[] names = { "Dirt", "Sand", "Gravel" };
+
         for (int i = 0; i < inv1.size(); i++) {
 
             //Create Items with alternating names and random counts
-            String name = "Gravel";
+            String name = names[i % three];
 
-            if (i % 2 == 0) {
-                name = "Food";
-            }
-
-            InventoryProofOfConcept.Item temp = new InventoryProofOfConcept.Item(
-                    name, (int) (Math.random() * ten) + 1);
+            InventoryConcept.Item temp = new InventoryConcept.Item(name,
+                    (int) (Math.random() * ten) + 1);
             inv1.addItem(i, temp);
 
             //Display each added item in terminal
-            System.out.printf("%s : %d, \n", inv1.getItem(i).getName(), inv1
-                    .getItem(i).tagValue(InventoryProofOfConcept.Item.COUNT));
+            System.out.printf("%s : %d, \n", inv1.getItem(i).getName(),
+                    inv1.getItem(i).tagValue(InventoryConcept.Item.COUNT));
         }
 
-        //Send only "Gravel" items to 2nd inventory
+        //Send items to 2nd inventory
         for (int i = 0; i < inv1.size(); i++) {
-            if (inv1.getItem(i).getName().equals("Gravel")) {
-                inv2.transferItem(inv1, i, 0);
-            }
+
+            inv2.transferItem(inv1, i,
+                    inv2.nextPlacement(inv1.getItem(i), ten * ten));
         }
 
         //Show results
         System.out.println();
-        System.out.println("Gravel Sent to Inventory 2:");
-        System.out.printf("%s : %d\n", inv2.getItem(0).getName(),
-                inv2.getItem(0).tagValue(InventoryProofOfConcept.Item.COUNT));
-
+        System.out.println("Items Sent to Inventory 2:");
+        for (int i = 0; i < inv2.size(); i++) {
+            System.out.printf("%s : %d\n", inv2.getItem(i).getName(),
+                    inv2.getItem(i).tagValue(InventoryConcept.Item.COUNT));
+        }
         System.out.println();
         System.out.println("Items in Inventory 1:");
         for (int i = 0; i < inv1.size(); i++) {
-            System.out.printf("%s : %d, \n", inv1.getItem(i).getName(), inv1
-                    .getItem(i).tagValue(InventoryProofOfConcept.Item.COUNT));
+            System.out.printf("%s : %d, \n", inv1.getItem(i).getName(),
+                    inv1.getItem(i).tagValue(InventoryConcept.Item.COUNT));
+        }
+
+        /******* Demo 2: Reference Inventory *******/
+        System.out.println(
+                "Demo 2: Sourcing Item Definitions from Reference Inventory\n");
+
+        //Construct reference inventory
+        InventoryConcept.Item shovel = new InventoryConcept.Item("Shovel");
+        InventoryConcept.Item mallet = new InventoryConcept.Item("Mallet");
+        InventoryConcept.Item food = new InventoryConcept.Item("Food");
+        InventoryConcept.Item medicine = new InventoryConcept.Item("Medicine");
+
+        shovel.putTag("tool", 0);
+        mallet.putTag("tool", 0);
+        food.putTag("consumable", 1);
+        medicine.putTag("consumable", 2);
+
+        InventoryConcept reference = new InventoryConcept(ten);
+        reference.addItem(0, medicine);
+        reference.addItem(1, shovel);
+        reference.addItem(2, food);
+        reference.addItem(three, mallet);
+
+        //Add items to in-use inventory based on those defined in reference inventory
+        InventoryConcept hotbar = new InventoryConcept(ten);
+        hotbar.copyItem(reference, "Mallet", 0);
+        hotbar.copyItem(reference, "Food", 1);
+        hotbar.copyItem(reference, "Shovel", 2);
+        hotbar.copyItem(reference, "Food", three);
+        hotbar.copyItem(reference, "Medicine", hotbar.size() - 1);
+
+        //Display what is in the in-use inventory
+        System.out.println("Items in In-Use Inventory:\n");
+
+        for (int i = 0; i < hotbar.size(); i++) {
+            System.out.printf("Item in slot %d is %s.\n", i,
+                    hotbar.getItem(i).getName());
+            System.out.printf("\tIs a tool? : %b\n",
+                    hotbar.getItem(i).hasTag("tool"));
+            System.out.printf("\tIs consumable? : %b\n",
+                    hotbar.getItem(i).hasTag("consumable"));
+            System.out.println();
         }
 
     }

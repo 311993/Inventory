@@ -98,8 +98,11 @@ do good work.
 > to create a new design. In you do end up picking one at random, you should
 > disclose that here as well.
 
-<!-- TODO: briefly argue your choice of design or design something
-new; then delete this comment -->
+My IndexedColorImage component from part 1 basically already exists in Java (a BufferedImage with an IndexColorModel). Any implementation of mine would have to contend with the fact that the Java graphics libraries have access to low level image rendering optimizations that would make it significantly faster than what I could reasonably implement given the project constraints. Furthermore, I don't want to just copy an existing model, so I am not moving forward with that component.
+
+Out of the remaining 2 brainstormed components, the Inventory component and the Matrix component, the Inventory more closely aligns with my goals and interests. Additionally, the Inventory component has more room for creativity in implementation and interesting client usage, whereas a Matrix would have to strictly behave as a mathematical matrix.
+
+Thus, I am choosing to move forward with the Inventory component.
 
 > Once you've argued your choice of design, make a branch in your new repo called
 > something like `proof-of-concept`. There are many ways to do this, but my
