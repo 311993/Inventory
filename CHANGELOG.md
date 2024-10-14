@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Calendar Versioning](https://calver.org/) of
 the following form: YYYY.0M.0D.
 
+## [2024.10.14]
+
+### Added
+- Interfaces for InventoryKernel, Inventory, and Item.
+- `isAllowed(Item)` kernel method to allow client to check an Item against restrictions and to facilitate `addItem` changes below.
+- `isAt(int slot, Item item)` secondary method header to conveniently check whether an item is at a certain slot.
+- Method contracts for InventoryKernel and Item methods.
+
+### Updated
+- Changed kernel method `restrictIntake()` to  `restrict(String)` for brevity and implementation flexibility.
+- changed `addItem` kernel method from boolean to void return type and added conditions which would previously cause a return of false to the requires clause.
+
 ## [2024.10.02]
 
 ### Added
