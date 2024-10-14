@@ -6,7 +6,7 @@
 public interface Inventory extends InventoryKernel {
 
     /**
-     * Returns the Item at a particular slot.
+     * Returns the Item at {@code slot} in {@code this}.
      *
      * @param slot
      *            the slot to get the Item from
@@ -16,17 +16,17 @@ public interface Inventory extends InventoryKernel {
      *
      * @ensures getItem = this[slot]
      *
-     * @aliases the item in the slot
+     * @aliases the Item in the slot
      */
     Item getItem(int slot);
 
     /**
-     * Adds a copy of an item in another Inventory to {@code this}.
+     * Adds a copy of an Item in another Inventory to {@code this}.
      *
      * @param src
      *            the source Inventory
      * @param name
-     *            the slot to get the item from
+     *            the slot to get the Item from
      * @param destSlot
      *            where to place the copied Item in {@code this}
      * @updates this
@@ -47,7 +47,7 @@ public interface Inventory extends InventoryKernel {
     void copyItem(InventoryConcept src, String name, int destSlot);
 
     /**
-     * Swaps the items in 2 slots of {@code this}.
+     * Swaps the Items in 2 slots of {@code this}.
      *
      * @param slot1
      *            the first slot
@@ -80,7 +80,7 @@ public interface Inventory extends InventoryKernel {
     void swapItems(InventoryConcept src, int srcSlot, int destSlot);
 
     /**
-     * Transfers an Item from another inventory to {@code this}.
+     * Transfers an Item from another Inventory to {@code this}.
      *
      * @param src
      *            the Inventory to transfer from
@@ -88,7 +88,7 @@ public interface Inventory extends InventoryKernel {
      * @param srcSlot
      *            the slot in {@code src} to transfer from
      * @param destSlot
-     *            the slot in {@code this} to place the item at
+     *            the slot in {@code this} to place the Item at
      * @updates this, src
      *
      * @requires <pre>
@@ -104,7 +104,7 @@ public interface Inventory extends InventoryKernel {
     /**
      * Returns position of the first slot in {@code this} at which {@code item}
      * could be added to {@code this}, or -1 if no such slot exists. The method
-     * will attempt to stack items before placing in an empty slot.
+     * will attempt to stack Items before placing in an empty slot.
      *
      * @param item
      *            the item to be placed
@@ -129,7 +129,7 @@ public interface Inventory extends InventoryKernel {
      * Removes a single Item at slot {@code slot} in {@code this}.
      *
      * @param slot
-     *            the slot at which to use the item
+     *            the slot at which to use the Item
      * @return the name of the used Item
      *
      * @updates this
@@ -144,7 +144,7 @@ public interface Inventory extends InventoryKernel {
     String useItem(int slot);
 
     /**
-     * Checks whether an Item with name {@code name} is at slot {@code slot} in
+     * Checks whether an Item with name {@code name} is at {@code slot} in
      * {@code this}.
      *
      * @param slot
@@ -160,7 +160,7 @@ public interface Inventory extends InventoryKernel {
      */
     boolean isAt(int slot, String name);
 
-    /** Representation of a single item in the inventory. */
+    /** Representation of a single item in the Inventory. */
     interface Item {
 
         /** Constant for count tag. An item is guaranteed to have this tag. */
@@ -174,7 +174,7 @@ public interface Inventory extends InventoryKernel {
          *
          * @return whether {@code this} is empty.
          *
-         * @ensures isEmpty = (this.name == Item.EMPTY_NAME )
+         * @ensures isEmpty = (this.name == Item.EMPTY_NAME)
          */
         boolean isEmpty();
 

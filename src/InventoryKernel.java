@@ -8,13 +8,13 @@ import components.standard.Standard;
 public interface InventoryKernel extends Standard<Inventory> {
 
     /**
-     * Adds the Item {@code item} to {@code this} at slot. If the same Item is
-     * at the destination, they are stacked (their count is summed). The
+     * Adds the Item {@code item} to {@code this} at {@code slot}. If the same
+     * Item is at the destination, they are stacked (their count is summed). The
      * destination slot must be empty or hold an Item with the same name. The
      * Item must satisfy the tag restrictions imposed by {@code this}.
      *
      * @param slot
-     *            the slot at which to add the item
+     *            the slot at which to add the Item
      * @param item
      *            the item to add at the destination
      * @updates this
@@ -32,7 +32,7 @@ public interface InventoryKernel extends Standard<Inventory> {
     void addItem(int slot, Inventory.Item item);
 
     /**
-     * Remove the Item at {@code slot}. Will return an empty item if that slot
+     * Remove the Item at {@code slot}. Will return an empty Item if that slot
      * is empty.
      *
      * @param slot
@@ -48,7 +48,7 @@ public interface InventoryKernel extends Standard<Inventory> {
     Inventory.Item removeItem(int slot);
 
     /**
-     * Requires items that are added to {@code this} to have tag {@code tag}.
+     * Requires Items that are added to {@code this} to have tag {@code tag}.
      *
      * @param tag
      *            the tag to require
@@ -69,11 +69,11 @@ public interface InventoryKernel extends Standard<Inventory> {
     void freeRestrictions();
 
     /**
-     * Checks whether an item passes the tag restrictions to be added to
+     * Checks whether an Item passes the tag restrictions to be added to
      * {@code this}.
      *
      * @param item
-     *            the item to check against the restrictions
+     *            the Item to check against the restrictions
      * @return true if {@code item} passes intake restrictions, and false
      *         otherwise
      * @requires item is not null
@@ -101,9 +101,9 @@ public interface InventoryKernel extends Standard<Inventory> {
     int nextIndexOf(String name, int pos);
 
     /**
-     * Returns the total number of slots in this inventory.
+     * Returns the total number of slots in {@code this}.
      *
-     * @return the number of slots in the inventory
+     * @return the number of slots in this Inventory
      *
      * @ensures size = |this|
      */
