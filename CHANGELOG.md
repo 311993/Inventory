@@ -11,12 +11,14 @@ the following form: YYYY.0M.0D.
 ### Added
 - Interfaces for InventoryKernel, Inventory, and Item.
 - `isAllowed(Item)` kernel method to allow client to check an Item against restrictions and to facilitate `addItem` changes below.
-- `isAt(int slot, Item item)` secondary method header to conveniently check whether an item is at a certain slot.
-- Method contracts for InventoryKernel and Item methods.
+- `isAt(int slot, String name)` secondary method header to conveniently check whether an item is at a certain slot.
+- Full method contracts for InventoryKernel, Inventory, and Item methods.
 
 ### Updated
 - Changed kernel method `restrictIntake()` to  `restrict(String)` for brevity and implementation flexibility.
 - changed `addItem` kernel method from boolean to void return type and added conditions which would previously cause a return of false to the requires clause.
+- Changed `copyItem` and `transferItem` secondary method return types to void and added requires clause conditions in line with the changes to `addItem` above.
+-Changed `useItem` secondary method to return the name of the item used.
 
 ## [2024.10.02]
 

@@ -17,6 +17,8 @@ public interface InventoryKernel extends Standard<Inventory> {
      *            the slot at which to add the item
      * @param item
      *            the item to add at the destination
+     * @updates this
+     *
      * @requires <pre>
      * - 0 <= slot < |this|
      *- item is not null
@@ -24,6 +26,8 @@ public interface InventoryKernel extends Standard<Inventory> {
      *- this.isAllowed(item)
      *</pre>
      * @ensures this[slot] = item
+     *
+     * @aliases this[slot] will be an alias of item
      */
     void addItem(int slot, Inventory.Item item);
 
