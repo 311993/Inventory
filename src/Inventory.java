@@ -1,3 +1,5 @@
+import java.util.Map;
+
 /**
  * {@code InventoryKernel} enhanced with secondary methods.
  *
@@ -44,7 +46,7 @@ public interface Inventory extends InventoryKernel {
      *  - this[destSlot].tags contains has a tag t iff t is in item.tags
      *</pre>
      */
-    void copyItem(InventoryConcept src, String name, int destSlot);
+    void copyItem(Inventory src, String name, int destSlot);
 
     /**
      * Swaps the Items in 2 slots of {@code this}.
@@ -73,11 +75,17 @@ public interface Inventory extends InventoryKernel {
      *            the slot in {@code this}
      * @updates this, src
      *
-     * @requires 0 <= srcSlot < |src|, 0 <= destSlot < |this|, src is not null
+     * @requires <pre>
+     * - src is not null
+     * - 0 <= srcSlot < |src|
+     * - 0 <= destSlot < |this|
+     * - this.isAllowed(src[srcSlot])
+     * - src.isAllowed(this[destSlot])
+     * </pre>
      *
      * @ensures this[destSlot] = #src[srcSlot], src[srcSlot] = #this[destSlot]
      */
-    void swapItems(InventoryConcept src, int srcSlot, int destSlot);
+    void swapItems(Inventory src, int srcSlot, int destSlot);
 
     /**
      * Transfers an Item from another Inventory to {@code this}.
@@ -99,7 +107,7 @@ public interface Inventory extends InventoryKernel {
      *
      * @ensures this[destSlot] = #src[srcSlot], src[srcSlot]=Item.EMPTY
      */
-    void transferItem(InventoryConcept src, int srcSlot, int destSlot);
+    void transferItem(Inventory src, int srcSlot, int destSlot);
 
     /**
      * Returns position of the first slot in {@code this} at which {@code item}
@@ -186,6 +194,15 @@ public interface Inventory extends InventoryKernel {
          * @ensures getName = this.name
          */
         String getName();
+
+        /**
+         * Returns the tags associated with this Item.
+         *
+         * @return the tags of {@code this}.
+         *
+         * @ensures getTags = this.tags
+         */
+        Map<String, Integer> getTags();
 
         /**
          * Returns whether this Item has the tag {@code tag}.
