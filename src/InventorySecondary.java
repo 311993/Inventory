@@ -1,6 +1,8 @@
 import java.util.Map;
 import java.util.TreeMap;
 
+import InventoryConcept.Item;
+
 /** Layered implementations of secondary methods for Inventory. */
 public abstract class InventorySecondary implements Inventory {
 
@@ -139,6 +141,49 @@ public abstract class InventorySecondary implements Inventory {
 
         return this.getItem(slot).getName().equals(name);
 
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        boolean equals = false;
+
+        if (o.getClass().equals(this.getClass())) {
+            Inventory n = (Inventory) o;
+
+            if (this.size() == n.size()) {
+                equals = true;
+
+                for (int i = 0; i < this.size(); i++) {
+
+                    Item removed1 = this.removeItem(i);
+                    Item removed2 = n.removeItem(i);
+
+                    if (!removed1.equals(removed2)) {
+                        equals = false;
+                    }
+
+                    this.addItem(i, removed1);
+                    n.addItem(i, removed2);
+                }
+            }
+
+        }
+
+        return equals;
+    }
+
+    @Override
+    public String toString() {
+        String rep = "{ ";
+
+        for (int i = 0; i < this.size(); i++) {
+            Item removed = this.removeItem(i);
+            rep += removed.toString() + ", ";
+            this.addItem(i, removed);
+        }
+
+        rep += " }";
+        return rep;
     }
 
     /**
