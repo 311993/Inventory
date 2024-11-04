@@ -7,6 +7,8 @@ public abstract class InventorySecondary implements Inventory {
 
     Item getItem(int slot) {
 
+        assert slot >= 0 && slot < this.size();
+
         Item removed = this.removeItem(slot);
         this.addItem(slot, removed);
 
@@ -14,6 +16,10 @@ public abstract class InventorySecondary implements Inventory {
     }
 
     void copyItem(InventoryConcept src, String name, int destSlot) {
+
+        assert src != null;
+        assert src.nextIndexOf(name, 0) >= 0;
+        assert destSlot >= 0 && destSlot < this.size();
 
         Item copy = new BasicItem();
         Item original = src.getItem(src.nextIndexOf(name, 0));
@@ -29,6 +35,9 @@ public abstract class InventorySecondary implements Inventory {
 
     void swapItems(int slot1, int slot2) {
 
+        assert slot1 >= 0 && slot1 < this.size();
+        assert slot2 >= 0 && slot2 < this.size();
+
         Item removed1 = this.removeItem(slot1);
         Item removed2 = this.removeItem(slot2);
 
@@ -37,6 +46,10 @@ public abstract class InventorySecondary implements Inventory {
     }
 
     void swapItems(InventoryConcept src, int srcSlot, int destSlot) {
+
+        assert src != null;
+        assert srcSlot >= 0 && srcSlot < src.size();
+        assert destSlot >= 0 && destSlot < this.size();
 
         Item srcRemoved = src.removeItem(srcSlot);
         Item destRemoved = this.removeItem(destSlot);
@@ -48,10 +61,16 @@ public abstract class InventorySecondary implements Inventory {
 
     void transferItem(InventoryConcept src, int srcSlot, int destSlot) {
 
+        assert src != null;
+        assert srcSlot >= 0 && srcSlot < src.size();
+        assert destSlot >= 0 && destSlot < this.size();
+
         this.addItem(destSlot, src.removeItem(srcSlot));
     }
 
     int nextPlacement(Item item, int maxStack) {
+
+        assert item != null;
 
         int pos = -1;
         int checkAt = 0;
@@ -66,7 +85,9 @@ public abstract class InventorySecondary implements Inventory {
             if (pos >= 0) {
 
                 //Make sure the stack is not full
-                if (this.getItem(pos).tagValue(Item.COUNT) < maxStack) {
+                if (maxStack < 0
+                        || this.getItem(pos).tagValue(Item.COUNT) < maxStack) {
+
                     doneCheckingStacks = true;
                 } else {
                     checkAt = pos + 1;
@@ -87,6 +108,9 @@ public abstract class InventorySecondary implements Inventory {
     }
 
     String useItem(int slot) {
+
+        assert slot >= 0 && slot < this.size();
+
         Item removed = this.removeItem(slot);
 
         removed.putTag(Item.COUNT, removed.tagValue(Item.COUNT) - 1);
@@ -97,6 +121,8 @@ public abstract class InventorySecondary implements Inventory {
     }
 
     boolean isAt(int slot, String name) {
+
+        assert slot >= 0 && slot < this.size();
 
         return this.getItem(slot).equals(name);
 
