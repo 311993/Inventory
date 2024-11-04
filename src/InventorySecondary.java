@@ -1,11 +1,12 @@
 import java.util.Map;
 import java.util.TreeMap;
 
-import InventoryConcept.Item;
-
+/** Layered implementations of secondary methods for Inventory. */
 public abstract class InventorySecondary implements Inventory {
 
-    Item getItem(int slot) {
+    //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
+    @Override
+    public Item getItem(int slot) {
 
         assert slot >= 0 && slot < this.size();
 
@@ -15,25 +16,27 @@ public abstract class InventorySecondary implements Inventory {
         return removed;
     }
 
-    void copyItem(InventoryConcept src, String name, int destSlot) {
+    //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
+    @Override
+    public void copyItem(Inventory src, String name, int destSlot) {
 
         assert src != null;
         assert src.nextIndexOf(name, 0) >= 0;
         assert destSlot >= 0 && destSlot < this.size();
 
-        Item copy = new BasicItem();
         Item original = src.getItem(src.nextIndexOf(name, 0));
+        Item copy = new BasicItem(original.getName());
 
-        copy.name = original.name;
-
-        for (Map.Entry<String, Integer> tag : original.tags.entrySet()) {
+        for (Map.Entry<String, Integer> tag : original.getTags().entrySet()) {
             copy.putTag(tag.getKey(), tag.getValue());
         }
 
         this.addItem(destSlot, copy);
     }
 
-    void swapItems(int slot1, int slot2) {
+    //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
+    @Override
+    public void swapItems(int slot1, int slot2) {
 
         assert slot1 >= 0 && slot1 < this.size();
         assert slot2 >= 0 && slot2 < this.size();
@@ -45,7 +48,9 @@ public abstract class InventorySecondary implements Inventory {
         this.addItem(slot2, removed1);
     }
 
-    void swapItems(InventoryConcept src, int srcSlot, int destSlot) {
+    //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
+    @Override
+    public void swapItems(Inventory src, int srcSlot, int destSlot) {
 
         assert src != null;
         assert srcSlot >= 0 && srcSlot < src.size();
@@ -59,7 +64,9 @@ public abstract class InventorySecondary implements Inventory {
 
     }
 
-    void transferItem(InventoryConcept src, int srcSlot, int destSlot) {
+    //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
+    @Override
+    public void transferItem(Inventory src, int srcSlot, int destSlot) {
 
         assert src != null;
         assert srcSlot >= 0 && srcSlot < src.size();
@@ -68,7 +75,9 @@ public abstract class InventorySecondary implements Inventory {
         this.addItem(destSlot, src.removeItem(srcSlot));
     }
 
-    int nextPlacement(Item item, int maxStack) {
+    //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
+    @Override
+    public int nextPlacement(Item item, int maxStack) {
 
         assert item != null;
 
@@ -107,7 +116,9 @@ public abstract class InventorySecondary implements Inventory {
         return pos;
     }
 
-    String useItem(int slot) {
+    //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
+    @Override
+    public String useItem(int slot) {
 
         assert slot >= 0 && slot < this.size();
 
@@ -120,14 +131,19 @@ public abstract class InventorySecondary implements Inventory {
         return removed.getName();
     }
 
-    boolean isAt(int slot, String name) {
+    //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
+    @Override
+    public boolean isAt(int slot, String name) {
 
         assert slot >= 0 && slot < this.size();
 
-        return this.getItem(slot).equals(name);
+        return this.getItem(slot).getName().equals(name);
 
     }
 
+    /**
+     * A basic implementation of {@code Item} interface.
+     */
     protected static final class BasicItem implements Item {
 
         /** The name of this item, which serves as its primary identifier. */
@@ -168,36 +184,56 @@ public abstract class InventorySecondary implements Inventory {
             this.tags.put("count", count);
         }
 
+        //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
+        @Override
         public boolean isEmpty() {
             return this.name.equals(Item.EMPTY_NAME);
         }
 
+        //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
+        @Override
         public String getName() {
             return this.name;
         }
 
+        //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
+        @Override
+        public Map<String, Integer> getTags() {
+            return this.tags;
+        }
+
+        //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
+        @Override
         public boolean hasTag(String tag) {
             return this.tags.containsKey(tag);
         }
 
+        //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
+        @Override
         public void putTag(String tag, int value) {
             this.tags.put(tag, value);
         }
 
+        //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
+        @Override
         public void removeTag(String tag) {
             assert !tag.equals(COUNT);
             this.tags.remove(tag);
         }
 
+        //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
+        @Override
         public int tagValue(String tag) {
             return this.tags.get(tag);
         }
 
+        //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
         @Override
         public int hashCode() {
             return this.name.hashCode();
         }
 
+        //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
         @Override
         public boolean equals(Object o) {
             boolean equal = false;
