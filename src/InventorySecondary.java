@@ -1,37 +1,104 @@
 import java.util.Map;
 import java.util.TreeMap;
 
+import InventoryConcept.Item;
+
 public abstract class InventorySecondary implements Inventory {
 
     Item getItem(int slot) {
 
+        Item removed = this.removeItem(slot);
+        this.addItem(slot, removed);
+
+        return removed;
     }
 
     void copyItem(InventoryConcept src, String name, int destSlot) {
 
+        Item copy = new BasicItem();
+        Item original = src.getItem(src.nextIndexOf(name, 0));
+
+        copy.name = original.name;
+
+        for (Map.Entry<String, Integer> tag : original.tags.entrySet()) {
+            copy.putTag(tag.getKey(), tag.getValue());
+        }
+
+        this.addItem(destSlot, copy);
     }
 
     void swapItems(int slot1, int slot2) {
 
+        Item removed1 = this.removeItem(slot1);
+        Item removed2 = this.removeItem(slot2);
+
+        this.addItem(slot1, removed2);
+        this.addItem(slot2, removed1);
     }
 
     void swapItems(InventoryConcept src, int srcSlot, int destSlot) {
+
+        Item srcRemoved = src.removeItem(srcSlot);
+        Item destRemoved = this.removeItem(destSlot);
+
+        src.addItem(srcSlot, destRemoved);
+        this.addItem(destSlot, srcRemoved);
 
     }
 
     void transferItem(InventoryConcept src, int srcSlot, int destSlot) {
 
+        this.addItem(destSlot, src.removeItem(srcSlot));
     }
 
     int nextPlacement(Item item, int maxStack) {
 
+        int pos = -1;
+        int checkAt = 0;
+        boolean doneCheckingStacks = false;
+
+        //Try to stack the Item with others of its kind
+        while (!doneCheckingStacks) {
+
+            pos = this.nextIndexOf(item.getName(), checkAt);
+
+            //If pos >= 0 a potential stack has been found
+            if (pos >= 0) {
+
+                //Make sure the stack is not full
+                if (this.getItem(pos).tagValue(Item.COUNT) < maxStack) {
+                    doneCheckingStacks = true;
+                } else {
+                    checkAt = pos + 1;
+                }
+
+            }
+            if (pos < 0 || checkAt >= this.size() - 1) {
+                doneCheckingStacks = true;
+            }
+        }
+
+        //If no viable stack is found, start a new one if possible
+        if (pos < 0) {
+            pos = this.nextIndexOf(Item.EMPTY_NAME, 0);
+        }
+
+        return pos;
     }
 
     String useItem(int slot) {
+        Item removed = this.removeItem(slot);
 
+        removed.putTag(Item.COUNT, removed.tagValue(Item.COUNT) - 1);
+
+        this.addItem(slot, removed);
+
+        return removed.getName();
     }
 
     boolean isAt(int slot, String name) {
+
+        return this.getItem(slot).equals(name);
 
     }
 
@@ -111,6 +178,8 @@ public abstract class InventorySecondary implements Inventory {
 
             if (o.getClass().equals(this.getClass())) {
                 equal = ((BasicItem) (o)).name.equals(this.name);
+            } else if (o.getClass().equals(String.class)) {
+                equal = this.name.equals((String) o);
             }
 
             return equal;
