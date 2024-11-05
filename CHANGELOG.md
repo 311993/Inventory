@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Calendar Versioning](https://calver.org/) of
 the following form: YYYY.0M.0D.
 
+##[2024.11.03]
+
+### Added
+- Abstract class for Inventory: InventorySecondary
+- Basic implementation for Item interface: BasicItem
+- Method implementations for Inventory secondary methods
+- Method implementations for Item methods
+- getTags() method for Item interface
+
+### Updated
+- Removed mentions of InventoryConcept in Inventory method signatures
+- Fixed swapItems() requires clause to match intended behavior and transerItems() requirements
+
 ## [2024.10.14]
 
 ### Added
