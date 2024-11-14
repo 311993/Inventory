@@ -173,6 +173,14 @@ public abstract class InventorySecondary implements Inventory {
 
     //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
     @Override
+    public int hashCode() {
+        assert false : "Hashing an Inventory is not permitted";
+
+        return 0;
+    }
+
+    //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
+    @Override
     public String toString() {
         String rep = "{ ";
 
