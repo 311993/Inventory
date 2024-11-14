@@ -1,0 +1,173 @@
+import java.util.HashSet;
+import java.util.Set;
+
+/**
+ * Implementation of Inventory on Array and Set.
+ *
+ * @convention
+ *
+ * @correspondence
+ *
+ * @author David Stuckey
+ */
+public class Inventory1 extends InventorySecondary {
+
+    /** The primary representation variable: the slots of this. */
+    private Item[] slots;
+
+    /** The requirements for an Item to be added to this. */
+    private Set<String> reqs;
+
+    /**
+     * Creates initial representation.
+     *
+     * @param size
+     *            - the number of slots this will have
+     */
+    private void createNewRep(int size) {
+        this.slots = new Item[size];
+        this.reqs = new HashSet<String>();
+
+        for (int i = 0; i < size; i++) {
+            this.slots[i] = new BasicItem();
+        }
+    }
+
+    /**
+     * Creates a new Inventory with a single slot.
+     */
+    public Inventory1() {
+        this.createNewRep(1);
+    }
+
+    /**
+     * Create a new Inventory with one or more slots.
+     *
+     * @param size
+     *            the number of slots this will have
+     *
+     * @requires size > 0
+     */
+    public Inventory1(int size) {
+        assert size > 0 : "Violation of size > 0";
+
+        this.createNewRep(size);
+    }
+
+    //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
+    @Override
+    public void addItem(int slot, Item item) {
+        assert 0 <= slot : "Violation of 0 <= slot";
+        assert slot < this.slots.length : "Violation of slot < |this|";
+        assert item != null : "Violation of item is not null";
+        assert this.slots[slot].isEmpty() || this.slots[slot].equals(
+                item) : "Violation of slot is empty or has an Item of the same name.";
+        assert this.isAllowed(item) : "Violation of isAllowed(item)";
+
+        Item dest = this.slots[slot];
+
+        if (dest.equals(item)) {
+            dest.putTag(Item.COUNT,
+                    dest.tagValue(Item.COUNT) + item.tagValue(Item.COUNT));
+        } else {
+            this.slots[slot] = item;
+        }
+    }
+
+    //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
+    @Override
+    public Item removeItem(int slot) {
+        assert 0 <= slot : "Violation of 0 <= slot";
+        assert slot < this.slots.length : "Violation of slot < |this|";
+
+        Item removed = this.slots[slot];
+        this.slots[slot] = new BasicItem();
+
+        return removed;
+    }
+
+    //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
+    @Override
+    public void restrict(String tag) {
+        if (!this.reqs.contains(tag)) {
+            this.reqs.add(tag);
+        }
+    }
+
+    //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
+    @Override
+    public void freeRestrictions() {
+        this.reqs = new HashSet<>();
+    }
+
+    //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
+    @Override
+    public boolean isAllowed(Item item) {
+        assert item != null : "Violation of item is not null";
+
+        boolean allow = true;
+
+        for (String t : this.reqs) {
+            if (!item.hasTag(t)) {
+                allow = false;
+            }
+        }
+
+        return allow;
+    }
+
+    //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
+    @Override
+    public int nextIndexOf(String name, int pos) {
+        assert 0 <= pos : "Violation of 0 <= pos";
+        assert pos < this.slots.length : "Violation of pos < |this|";
+
+        int i = pos;
+        boolean hasItem = false;
+
+        while (!hasItem && i < this.slots.length) {
+            hasItem = this.slots[i].getName().equals(name);
+            i++;
+        }
+
+        if (!hasItem) {
+            i = 0;
+        }
+
+        return i - 1;
+    }
+
+    //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
+    @Override
+    public int size() {
+        return this.slots.length;
+    }
+
+    //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
+    @Override
+    public void clear() {
+        this.createNewRep(1);
+    }
+
+    //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
+    @Override
+    public Inventory newInstance() {
+        return new Inventory1();
+    }
+
+    //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
+    @Override
+    public void transferFrom(Inventory src) {
+        assert src != null : "Violation of: source is not null";
+        assert src != this : "Violation of: source is not this";
+        assert src instanceof Inventory1 : ""
+                + "Violation of: source is of dynamic type Inventory1";
+
+        Inventory1 localSrc = (Inventory1) src;
+
+        localSrc.reqs = this.reqs;
+        localSrc.slots = this.slots;
+
+        this.createNewRep(1);
+    }
+}

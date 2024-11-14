@@ -1,7 +1,6 @@
 import java.util.Map;
 import java.util.TreeMap;
 
-
 /** Layered implementations of secondary methods for Inventory. */
 public abstract class InventorySecondary implements Inventory {
 
@@ -142,11 +141,12 @@ public abstract class InventorySecondary implements Inventory {
 
     }
 
+    //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
     @Override
     public boolean equals(Object o) {
         boolean equals = false;
 
-        if (o.getClass().equals(this.getClass())) {
+        if (o != null && o.getClass().equals(this.getClass())) {
             Inventory n = (Inventory) o;
 
             if (this.size() == n.size()) {
@@ -171,6 +171,7 @@ public abstract class InventorySecondary implements Inventory {
         return equals;
     }
 
+    //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
     @Override
     public String toString() {
         String rep = "{ ";
