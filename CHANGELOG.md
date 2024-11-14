@@ -15,7 +15,7 @@ the following form: YYYY.0M.0D.
 - Convention and correspondence for Inventory1
 
 ### Updated
-- restrict kernel method to remove and return newly disallowed items
+- `restrict()` kernel method to remove and return newly disallowed items
 
 ##[2024.11.03]
 
