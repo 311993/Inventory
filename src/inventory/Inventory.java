@@ -1,4 +1,5 @@
 package inventory;
+
 import java.util.Map;
 
 /**
@@ -109,6 +110,8 @@ public interface Inventory extends InventoryKernel {
      * @ensures this[destSlot] = #src[srcSlot], src[srcSlot]=Item.EMPTY
      */
     void transferItem(Inventory src, int srcSlot, int destSlot);
+
+    //TODO: add split method
 
     /**
      * Returns position of the first slot in {@code this} at which {@code item}

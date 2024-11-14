@@ -16,7 +16,9 @@
     <module name="JavadocType">
       <property name="allowUnknownTags" value="true"/>
     </module>
-    <module name="JavadocVariable"/>
+    <module name="JavadocVariable">
+      <property name="tokens" value="VARIABLE_DEF"/>
+    </module>
     <module name="JavadocStyle"/>
     <module name="ConstantName"/>
     <module name="LocalFinalVariableName"/>
