@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 import components.standard.Standard;
 
 /**
@@ -48,16 +50,23 @@ public interface InventoryKernel extends Standard<Inventory> {
     Inventory.Item removeItem(int slot);
 
     /**
-     * Requires Items that are added to {@code this} to have tag {@code tag}.
+     * Requires Items that are added to {@code this} to have tag {@code tag} and
+     * returns existing Items without tag {@code tag}.
      *
      * @param tag
      *            the tag to require
      *
+     * @return the Items currently in {@code this} that do not have {@code tag}
+     *         as a tag
+     *
      * @updates this
      *
-     * @ensures tag is in this.restrictions
+     * @ensures <pre>
+     *  tag is in this.restrictions
+     *  all non-empty Items in {@code this} have {@code tag} as a tag
+     * </pre>
      */
-    void restrict(String tag);
+    ArrayList<Inventory.Item> restrict(String tag);
 
     /**
      * Removes all tag restrictions from {@code this}.

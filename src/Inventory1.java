@@ -1,12 +1,20 @@
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
  * Implementation of Inventory on Array and Set.
  *
- * @convention
+ * @convention <pre>
+ * |$this.slots| > 0 and
+ * for all 0 <= i < |$this.slots|:
+ *  [$this.slots[i] is defined and is not null] and
+ *  [if $this.slots[i] is not an empty Item, it has all the entries in this.reqs as tags]
+ * </pre>
  *
- * @correspondence
+ * @correspondence <pre>
+ *  this = [the Items in $this.slots]
+ *</pre>
  *
  * @author David Stuckey
  */
@@ -88,10 +96,23 @@ public class Inventory1 extends InventorySecondary {
 
     //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
     @Override
-    public void restrict(String tag) {
+    public ArrayList<Item> restrict(String tag) {
         if (!this.reqs.contains(tag)) {
             this.reqs.add(tag);
         }
+
+        ArrayList<Item> removed = new ArrayList<>();
+
+        for (int i = 0; i < this.slots.length; i++) {
+
+            if (!this.slots[i].hasTag(tag)) {
+
+                removed.add(this.slots[i]);
+                this.slots[i] = new BasicItem();
+            }
+        }
+
+        return removed;
     }
 
     //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
@@ -111,6 +132,10 @@ public class Inventory1 extends InventorySecondary {
             if (!item.hasTag(t)) {
                 allow = false;
             }
+        }
+
+        if (item.getName().equals(Item.EMPTY_NAME)) {
+            allow = true;
         }
 
         return allow;
