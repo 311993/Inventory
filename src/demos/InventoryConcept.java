@@ -1,6 +1,12 @@
+package demos;
+
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
+
+import inventory.Inventory;
+import inventory.Inventory1;
+import inventory.InventorySecondary;
 
 /**
  * Class representing a proof of concept implementation for an Inventory
@@ -424,8 +430,8 @@ final class Main {
         //Construct demo vars
         final int ten = 10;
         final int three = 3;
-        InventoryConcept inv1 = new InventoryConcept(ten);
-        InventoryConcept inv2 = new InventoryConcept(three);
+        Inventory inv1 = new Inventory1(ten);
+        Inventory inv2 = new Inventory1(three);
 
         //Add items to slots of first inventory
         System.out.println("Items in Inventory 1:");
@@ -437,13 +443,13 @@ final class Main {
             //Create Items with alternating names and random counts
             String name = names[i % three];
 
-            InventoryConcept.Item temp = new InventoryConcept.Item(name,
+            Inventory.Item temp = new InventorySecondary.BasicItem(name,
                     (int) (Math.random() * ten) + 1);
             inv1.addItem(i, temp);
 
             //Display each added item in terminal
             System.out.printf("%s : %d, \n", inv1.getItem(i).getName(),
-                    inv1.getItem(i).tagValue(InventoryConcept.Item.COUNT));
+                    inv1.getItem(i).tagValue(Inventory.Item.COUNT));
         }
 
         //Send items to 2nd inventory
@@ -458,13 +464,13 @@ final class Main {
         System.out.println("Items Sent to Inventory 2:");
         for (int i = 0; i < inv2.size(); i++) {
             System.out.printf("%s : %d\n", inv2.getItem(i).getName(),
-                    inv2.getItem(i).tagValue(InventoryConcept.Item.COUNT));
+                    inv2.getItem(i).tagValue(Inventory.Item.COUNT));
         }
         System.out.println();
         System.out.println("Items in Inventory 1:");
         for (int i = 0; i < inv1.size(); i++) {
             System.out.printf("%s : %d, \n", inv1.getItem(i).getName(),
-                    inv1.getItem(i).tagValue(InventoryConcept.Item.COUNT));
+                    inv1.getItem(i).tagValue(Inventory.Item.COUNT));
         }
 
         /******* Demo 2: Reference Inventory *******/
@@ -472,24 +478,24 @@ final class Main {
                 "Demo 2: Sourcing Item Definitions from Reference Inventory\n");
 
         //Construct reference inventory
-        InventoryConcept.Item shovel = new InventoryConcept.Item("Shovel");
-        InventoryConcept.Item mallet = new InventoryConcept.Item("Mallet");
-        InventoryConcept.Item food = new InventoryConcept.Item("Food");
-        InventoryConcept.Item medicine = new InventoryConcept.Item("Medicine");
+        Inventory.Item shovel = new InventorySecondary.BasicItem("Shovel");
+        Inventory.Item mallet = new InventorySecondary.BasicItem("Mallet");
+        Inventory.Item food = new InventorySecondary.BasicItem("Food");
+        Inventory.Item medicine = new InventorySecondary.BasicItem("Medicine");
 
         shovel.putTag("tool", 0);
         mallet.putTag("tool", 0);
         food.putTag("consumable", 1);
         medicine.putTag("consumable", 2);
 
-        InventoryConcept reference = new InventoryConcept(ten);
+        Inventory reference = new Inventory1(ten);
         reference.addItem(0, medicine);
         reference.addItem(1, shovel);
         reference.addItem(2, food);
         reference.addItem(three, mallet);
 
         //Add items to in-use inventory based on those defined in reference inventory
-        InventoryConcept hotbar = new InventoryConcept(ten);
+        Inventory hotbar = new Inventory1(ten);
         hotbar.copyItem(reference, "Mallet", 0);
         hotbar.copyItem(reference, "Food", 1);
         hotbar.copyItem(reference, "Shovel", 2);

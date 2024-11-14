@@ -1,3 +1,5 @@
+package inventory;
+
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -197,7 +199,7 @@ public abstract class InventorySecondary implements Inventory {
     /**
      * A basic implementation of {@code Item} interface.
      */
-    protected static final class BasicItem implements Item {
+    public static final class BasicItem implements Item {
 
         /** The name of this item, which serves as its primary identifier. */
         private String name;

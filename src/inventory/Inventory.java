@@ -1,3 +1,4 @@
+package inventory;
 import java.util.Map;
 
 /**
