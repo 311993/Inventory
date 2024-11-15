@@ -51,10 +51,14 @@ public class DemoController {
     /** A Button Event Response: Select a position for item movement. */
     public void buttonA() {
 
-        try {
-            this.model.selectPosMove();
-        } catch (ItemRestrictionException e) {
-            //TODO:Notify user somehow?
+        if (!this.model.isInMessage()) {
+            try {
+                this.model.selectPosMove();
+            } catch (ItemRestrictionException e) {
+                this.model.sendMessage("CANNOT EQUIP THERE");
+            }
+        } else {
+            this.model.clearMessage();
         }
 
         this.updateView();
@@ -63,72 +67,104 @@ public class DemoController {
     /** B Button Event Response: Unselect Position. */
     public void buttonB() {
 
-        this.model.unselectPos();
+        if (!this.model.isInMessage()) {
+            this.model.unselectPos();
+        } else {
+            this.model.clearMessage();
+        }
+
+        this.updateView();
+    }
+
+    /** X Button Event Response: Select a position for stack splitting. */
+    public void buttonX() {
+
+        if (!this.model.isInMessage()) {
+            //TODO:SPLITTING
+        } else {
+            this.model.clearMessage();
+        }
+
+        this.updateView();
+    }
+
+    /** Y Button Event Response: Autosend. */
+    public void buttonY() {
+
+        if (!this.model.isInMessage()) {
+            this.model.autoSend();
+        } else {
+            this.model.clearMessage();
+        }
 
         this.updateView();
     }
 
     /** Up Arrow Event Response: Move Cursor Up. */
     public void up() {
-
-        switch (this.model.getCurrentInv()) {
-            case GENERAL:
-            case USABLE:
-            case HANDS:
-                this.model.moveCursor(false);
-                break;
-
-            case ARMOR:
-                this.model.changeInv(InvIndices.HANDS);
-                this.model.moveCursor(true);
-                break;
-
-            case RELICS:
-                if (this.model.getCursorPos() == 0) {
-                    this.model.changeInv(InvIndices.ARMOR);
-                } else {
+        if (!this.model.isInMessage()) {
+            switch (this.model.getCurrentInv()) {
+                case GENERAL:
+                case USABLE:
+                case HANDS:
                     this.model.moveCursor(false);
-                }
-                break;
+                    break;
 
-            default: //Will not occur
+                case ARMOR:
+                    this.model.changeInv(InvIndices.HANDS);
+                    this.model.moveCursor(true);
+                    break;
+
+                case RELICS:
+                    if (this.model.getCursorPos() == 0) {
+                        this.model.changeInv(InvIndices.ARMOR);
+                    } else {
+                        this.model.moveCursor(false);
+                    }
+                    break;
+
+                default: //Will not occur
+            }
         }
-
         this.updateView();
     }
 
     /** Down Arrow Event Response: Move Cursor Down. */
     public void down() {
 
-        switch (this.model.getCurrentInv()) {
-            case GENERAL:
-            case USABLE:
-            case RELICS:
-                this.model.moveCursor(true);
-                break;
-
-            case ARMOR:
-                this.model.changeInv(InvIndices.RELICS);
-                break;
-
-            case HANDS:
-                if (this.model.getCursorPos() == 1) {
-                    this.model.changeInv(InvIndices.ARMOR);
-                } else {
+        if (!this.model.isInMessage()) {
+            switch (this.model.getCurrentInv()) {
+                case GENERAL:
+                case USABLE:
+                case RELICS:
                     this.model.moveCursor(true);
-                }
-                break;
+                    break;
 
-            default: //Will not occur
+                case ARMOR:
+                    this.model.changeInv(InvIndices.RELICS);
+                    break;
+
+                case HANDS:
+                    if (this.model.getCursorPos() == 1) {
+                        this.model.changeInv(InvIndices.ARMOR);
+                    } else {
+                        this.model.moveCursor(true);
+                    }
+                    break;
+
+                default: //Will not occur
+            }
         }
-
         this.updateView();
     }
 
     /** Left Arrow Event Response: Move Cursor Left. */
     public void left() {
-        if (!this.model.getCurrentInv().equals(InvIndices.GENERAL)) {
-            this.model.changeInv(InvIndices.GENERAL);
+
+        if (!this.model.isInMessage()) {
+            if (!this.model.getCurrentInv().equals(InvIndices.GENERAL)) {
+                this.model.changeInv(InvIndices.GENERAL);
+            }
         }
 
         this.updateView();
@@ -137,15 +173,17 @@ public class DemoController {
     /** Right Arrow Event Response: Move Cursor Right. */
     public void right() {
 
-        if (this.model.getCurrentInv().equals(InvIndices.GENERAL)) {
+        if (!this.model.isInMessage()) {
+            if (this.model.getCurrentInv().equals(InvIndices.GENERAL)) {
 
-            if (this.model.getCursorPos() < this.model
-                    .getItemLabels(InvIndices.GENERAL).size() / 2) {
+                if (this.model.getCursorPos() < this.model
+                        .getItemLabels(InvIndices.GENERAL).size() / 2) {
 
-                this.model.changeInv(InvIndices.HANDS);
+                    this.model.changeInv(InvIndices.HANDS);
 
-            } else {
-                this.model.changeInv(InvIndices.USABLE);
+                } else {
+                    this.model.changeInv(InvIndices.USABLE);
+                }
             }
         }
 
@@ -236,6 +274,11 @@ public class DemoController {
 
             this.view.placeCursor(x, y);
 
+        }
+
+        if (this.model.isInMessage()) {
+            this.view.placeBox(this.model.getMessage(), 0,
+                    HEIGHT / CELLSIZE / 2 - 1, WIDTH / CELLSIZE, 0);
         }
 
         //Update canvas

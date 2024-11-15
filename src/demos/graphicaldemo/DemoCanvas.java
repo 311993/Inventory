@@ -83,6 +83,43 @@ public class DemoCanvas extends Canvas {
         window.drawImage(this.buffer, (this.width - SIM_WIDTH * this.ratio) / 2,
                 (this.height - SIM_HEIGHT * this.ratio) / 2,
                 SIM_WIDTH * this.ratio, SIM_HEIGHT * this.ratio, null);
+
+        this.drawInstructions(window);
+    }
+
+    /**
+     * Writes user instructions ouside sim.
+     *
+     * @param window
+     *            - the graphics context to draw on.
+     */
+    private void drawInstructions(Graphics window) {
+        BufferedImage temp = this.buffer;
+
+        this.buffer = new BufferedImage(SIM_WIDTH, SIM_HEIGHT,
+                BufferedImage.TYPE_4BYTE_ABGR);
+        this.g = this.buffer.getGraphics();
+
+        final int offsetX = 4, offsetY = 44;
+        final int cellSize = 16;
+        int line = 0;
+
+        this.drawText("ARROWS MOVE", offsetX, offsetY + line * cellSize);
+        line++;
+        this.drawText("V SELECT POS", offsetX, offsetY + line * cellSize);
+        line++;
+        this.drawText("C GO BACK", offsetX, offsetY + line * cellSize);
+        line++;
+        this.drawText("X SPLIT STACK", offsetX, offsetY + line * cellSize);
+        line++;
+        this.drawText("Z AUTO SEND", offsetX, offsetY + line * cellSize);
+
+        window.drawImage(this.buffer, (this.width + SIM_WIDTH * this.ratio) / 2,
+                (this.height - SIM_HEIGHT * this.ratio) / 2,
+                SIM_WIDTH * this.ratio, SIM_HEIGHT * this.ratio, null);
+
+        this.buffer = temp;
+        this.g = this.buffer.getGraphics();
     }
 
     /**

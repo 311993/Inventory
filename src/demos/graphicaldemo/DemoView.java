@@ -26,7 +26,7 @@ public class DemoView extends JFrame implements KeyListener {
 
     /** Indices for each tracked key in KEYCODES and keys[]. */
     private enum Keys {
-        UP, DOWN, LEFT, RIGHT, A, B
+        UP, DOWN, LEFT, RIGHT, A, B, X, Y
     }
 
     /** KeyCodes for key events. */
@@ -106,7 +106,9 @@ public class DemoView extends JFrame implements KeyListener {
         this.canvas.drawBox(colX, headerY, width, 2);
         this.canvas.drawText(header, colX * CELLSIZE + headerX,
                 headerY * CELLSIZE + HEADER_OFFSET);
-        this.canvas.drawBox(colX, headerY + 2, width, length);
+        if (length > 0) {
+            this.canvas.drawBox(colX, headerY + 2, width, length);
+        }
     }
 
     /**
@@ -167,6 +169,14 @@ public class DemoView extends JFrame implements KeyListener {
 
                 case B:
                     this.controller.buttonB();
+                    break;
+
+                case X:
+                    this.controller.buttonX();
+                    break;
+
+                case Y:
+                    this.controller.buttonY();
                     break;
 
                 default:

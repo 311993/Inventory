@@ -100,7 +100,7 @@ public abstract class InventorySecondary implements Inventory {
             if (pos >= 0) {
 
                 //Make sure the stack is not full
-                if (maxStack < 0
+                if (maxStack <= 0
                         || this.getItem(pos).tagValue(Item.COUNT) < maxStack) {
 
                     doneCheckingStacks = true;

@@ -48,6 +48,17 @@ public final class DemoModel {
     /** Stored positions in the current or past inventory. */
     private int cursorPos, savedPos;
 
+    //State
+
+    /** Whether or not a message is currently being displayed to the user. */
+    private boolean inMessage;
+
+    /** The message that should be displayed. */
+    private String message;
+
+    /** Number of items to transfer in a split. */
+    private int count;
+
     /** Creates a new DemoModel. */
     public DemoModel() {
 
@@ -112,6 +123,10 @@ public final class DemoModel {
         this.savedInv = 0;
         this.cursorPos = 0;
         this.savedPos = -1;
+
+        this.inMessage = false;
+        this.count = 1;
+        this.message = "";
     }
 
     /**
@@ -222,6 +237,7 @@ public final class DemoModel {
 
             String label = "";
 
+            //Add count / type prefix to label
             switch (inv) {
                 case GENERAL:
                 case USABLE:
@@ -260,6 +276,8 @@ public final class DemoModel {
                     break;
                 default:
             }
+
+            //Add name to label
             if (i.getName().length() > 0) {
                 label += i.getName().substring(1);
             }
@@ -281,6 +299,42 @@ public final class DemoModel {
     }
 
     /**
+     * Return whether on not a message is being displayed.
+     *
+     * @return true if a message should be displayed, false otherwise
+     */
+    public boolean isInMessage() {
+        return this.inMessage;
+    }
+
+    /**
+     * Clears any message being displayed.
+     */
+    public void clearMessage() {
+        this.inMessage = false;
+    }
+
+    /**
+     * Sets the message to be displayed to {@code msg}.
+     *
+     * @param msg
+     *            the message to display.
+     */
+    public void sendMessage(String msg) {
+        this.message = msg;
+        this.inMessage = true;
+    }
+
+    /**
+     * Gets the message that should be displayed.
+     *
+     * @return the message to be displayed
+     */
+    public String getMessage() {
+        return this.message;
+    }
+
+    /**
      * Save cursor position or advance to item movement if a saved position
      * exists.
      *
@@ -299,7 +353,47 @@ public final class DemoModel {
     }
 
     //TODO:Implement splitting
-    //TODO:Implement autosend
+
+    /**
+     * Send the item at the cursor position to the first valid position in a
+     * different inventory, if possible. If the item is not in the general
+     * inventory, it will be sent there. Otherwise, the item will be
+     * "auto-equipped" to another inventory based on the tag requirements.
+     */
+    public void autoSend() {
+
+        Item sent = this.invs.get(this.currentInv).getItem(this.cursorPos);
+        InvIndices destInv = InvIndices.GENERAL;
+
+        if (this.currentInv == 0) {
+            if (sent.hasTag("WEAPON")) {
+                destInv = InvIndices.HANDS;
+            } else if (sent.hasTag("ARMOR")) {
+                destInv = InvIndices.ARMOR;
+            } else if (sent.hasTag("RELIC")) {
+                destInv = InvIndices.RELICS;
+            } else if (sent.hasTag("USE")) {
+                destInv = InvIndices.USABLE;
+            }
+        }
+
+        int destPos = this.invs.get(destInv.ordinal()).nextPlacement(sent, 0);
+
+        if (destInv.ordinal() != this.currentInv && destPos >= 0) {
+            this.savedPos = this.cursorPos;
+            this.savedInv = this.currentInv;
+            this.currentInv = destInv.ordinal();
+            this.cursorPos = destPos;
+            try {
+                this.moveItem();
+            } catch (ItemRestrictionException e) {
+                //Will not occur since destPos guaranteed to be valid add position
+            }
+            this.cursorPos = this.savedPos;
+            this.currentInv = this.savedInv;
+            this.savedPos = -1;
+        }
+    }
 
     /**
      * Reset cursor position.
