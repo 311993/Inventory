@@ -116,7 +116,13 @@ public final class DemoModel {
             this.cursorPos--;
         }
 
-        this.cursorPos %= this.invs.get(this.currentInv).size();
+        if (this.cursorPos < 0) {
+            this.cursorPos++;
+        }
+
+        if (this.cursorPos == this.invs.get(this.currentInv).size()) {
+            this.cursorPos--;
+        }
     }
 
     /**
@@ -133,8 +139,8 @@ public final class DemoModel {
      *
      * @return the current inventory
      */
-    public int getCurrentInv() {
-        return this.currentInv;
+    public InvIndices getCurrentInv() {
+        return InvIndices.values()[this.currentInv];
     }
 
     /**

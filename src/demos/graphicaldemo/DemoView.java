@@ -1,6 +1,5 @@
 package demos.graphicaldemo;
 
-import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
@@ -16,7 +15,7 @@ import javax.swing.JFrame;
 public class DemoView extends JFrame implements KeyListener {
 
     /** The canvas on which the demo is drawn. */
-    private Canvas canvas;
+    private DemoCanvas canvas;
 
     /** The screen dimensions. */
     private final int width, height;
@@ -44,12 +43,14 @@ public class DemoView extends JFrame implements KeyListener {
         this.setSize(this.width, this.height);
 
         this.canvas = new DemoCanvas(this.width, this.height);
+        this.canvas.addKeyListener(this);
 
         this.getContentPane().add(this.canvas);
 
         this.getContentPane().setBackground(Color.BLACK);
 
         this.setFocusable(true);
+        this.requestFocus();
         this.setUndecorated(false);
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setVisible(true);
@@ -57,11 +58,57 @@ public class DemoView extends JFrame implements KeyListener {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
+    /** Places the item text in the canvas. */
+    public void placeItems() {
+        for (int i = 0; i < 11; i++) {
+            this.canvas.drawText("!ABCD WXYZ", 32, 44 + i * 16);
+
+            if (i < 5 || i > 7) {
+                this.canvas.drawText("0123456789", 160, 44 + i * 16);
+            }
+        }
+    }
+
+    /** Places the menu boxes in the canvas. */
+    public void placeBoxes() {
+        this.canvas.drawBox(0, 0, 8, 2);
+        this.canvas.drawText(" General", 32, 12);
+        this.canvas.drawBox(0, 2, 8, 12);
+
+        this.canvas.drawBox(8, 0, 8, 2);
+        this.canvas.drawText("Equipment", 160, 12);
+        this.canvas.drawBox(8, 2, 8, 6);
+
+        this.canvas.drawBox(8, 8, 8, 2);
+        this.canvas.drawText(" Usables", 160, 140);
+        this.canvas.drawBox(8, 10, 8, 4);
+    }
+
+    /**
+     * Places the cursor in the canvas at (x,y).
+     *
+     * @param x
+     *            the x position at which to place the cursor
+     * @param y
+     *            the y position at which to place the cursor
+     */
+    public void placeCursor(int x, int y) {
+        this.canvas.drawText("2", x, y);
+    }
+
+    /** Updates the canvas with any graphical changes. */
+    public void render() {
+        this.canvas.paint(this.canvas.getGraphics());
+    }
+
     //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
     @Override
     public void keyTyped(KeyEvent e) {
+        //Do nothing
+    }
 
-        this.canvas.paint(this.getGraphics());
+    @Override
+    public void keyPressed(KeyEvent e) {
 
         int key = -1;
 
@@ -100,11 +147,6 @@ public class DemoView extends JFrame implements KeyListener {
                 default:
             }
         }
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        //Do nothing
     }
 
     @Override

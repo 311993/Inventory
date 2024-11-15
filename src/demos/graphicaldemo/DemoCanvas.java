@@ -9,10 +9,15 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+/**
+ * Canvas for drawing the graphical inventory demo.
+ *
+ * @author David Stuckey
+ */
 public class DemoCanvas extends Canvas {
 
     /** The screen dimensions. */
-    private final int WIDTH, HEIGHT;
+    private final int width, height;
 
     /** Ratio of buffer size to display on screen. */
     private final int ratio;
@@ -26,8 +31,10 @@ public class DemoCanvas extends Canvas {
     /** The graphics context of the screen buffer. */
     private Graphics g;
 
+    /** The image to source the font from. */
     private BufferedImage font;
 
+    /** The index of the default character in the font. */
     private static final int DEFAULT_TEXT_INDEX = 27;
 
     /**
@@ -39,20 +46,20 @@ public class DemoCanvas extends Canvas {
      *            the height
      */
     public DemoCanvas(int w, int h) {
-        this.WIDTH = w;
-        this.HEIGHT = h;
+        this.width = w;
+        this.height = h;
 
-        this.setSize(this.WIDTH, this.HEIGHT);
+        this.setSize(this.width, this.height);
         this.setVisible(true);
 
         this.buffer = new BufferedImage(SIM_WIDTH, SIM_HEIGHT,
                 BufferedImage.TYPE_4BYTE_ABGR);
         this.g = this.buffer.getGraphics();
 
-        if (this.WIDTH / SIM_WIDTH > this.HEIGHT / SIM_HEIGHT) {
-            this.ratio = (int) Math.floor(this.HEIGHT / SIM_HEIGHT);
+        if (this.width / SIM_WIDTH > this.height / SIM_HEIGHT) {
+            this.ratio = (int) Math.floor(this.height / SIM_HEIGHT);
         } else {
-            this.ratio = (int) Math.floor(this.WIDTH / SIM_WIDTH);
+            this.ratio = (int) Math.floor(this.width / SIM_WIDTH);
         }
 
         try {
@@ -67,28 +74,8 @@ public class DemoCanvas extends Canvas {
     @Override
     public void paint(Graphics window) {
 
-        this.drawBox(0, 0, 8, 2);
-        this.drawText(" General", 32, 12);
-        this.drawBox(0, 2, 8, 12);
-
-        this.drawBox(8, 0, 8, 2);
-        this.drawText("Equipment", 160, 12);
-        this.drawBox(8, 2, 8, 6);
-
-        this.drawBox(8, 8, 8, 2);
-        this.drawText(" Usables", 160, 140);
-        this.drawBox(8, 10, 8, 4);
-
-        for (int i = 0; i < 11; i++) {
-            this.drawText("!ABCD WXYZ", 32, 44 + i * 16);
-
-            if (i < 5 || i > 7) {
-                this.drawText("0123456789", 160, 44 + i * 16);
-            }
-        }
-
-        window.drawImage(this.buffer, (this.WIDTH - SIM_WIDTH * this.ratio) / 2,
-                (this.HEIGHT - SIM_HEIGHT * this.ratio) / 2,
+        window.drawImage(this.buffer, (this.width - SIM_WIDTH * this.ratio) / 2,
+                (this.height - SIM_HEIGHT * this.ratio) / 2,
                 SIM_WIDTH * this.ratio, SIM_HEIGHT * this.ratio, null);
     }
 
@@ -167,7 +154,7 @@ public class DemoCanvas extends Canvas {
      * @param hCells
      *            the width in 'cells'
      */
-    private void drawBox(int xCell, int yCell, int wCells, int hCells) {
+    public void drawBox(int xCell, int yCell, int wCells, int hCells) {
 
         final int cellSize = 16;
         final int cornerSize = cellSize / 4;
