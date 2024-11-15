@@ -83,6 +83,25 @@ public abstract class InventorySecondary implements Inventory {
 
     //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
     @Override
+    public void splitItems(int srcSlot, int destSlot, int count) {
+
+        assert srcSlot >= 0 && srcSlot < this.size();
+        assert destSlot >= 0 && destSlot < this.size();
+        assert this.getItem(srcSlot).tagValue(Item.COUNT) <= count;
+
+        Item oldStack = this.removeItem(srcSlot);
+        Item newStack = new BasicItem(oldStack.getName());
+
+        for (String tag : oldStack.getTags().keySet()) {
+            newStack.putTag(tag, oldStack.tagValue(tag));
+        }
+
+        newStack.putTag(Item.COUNT, count);
+        oldStack.putTag(Item.COUNT, oldStack.tagValue(Item.COUNT) - count);
+    }
+
+    //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
+    @Override
     public int nextPlacement(Item item, int maxStack) {
 
         assert item != null;

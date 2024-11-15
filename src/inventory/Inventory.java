@@ -111,7 +111,31 @@ public interface Inventory extends InventoryKernel {
      */
     void transferItem(Inventory src, int srcSlot, int destSlot);
 
-    //TODO: add split method
+    /**
+     * Moves some of the Items at {@code srcSlot} to {@code destSlot}.
+     *
+     * @param srcSlot
+     *            the slot in {@code this} to take from
+     * @param destSlot
+     *            the slot in {@code this} to place at
+     * @param count
+     *            the number of Items to move
+     * @updates this
+     *
+     * @requires <pre>
+     * 0 <= srcSlot < |this|
+     * 0 <= destSlot < |this|
+     * srcSlot != destSlot,
+     * 0 <= |this[srcSlot]| <= count
+     * this[destSlot] = empty OR this[destSlot].name = this[srcSlot].name
+     * </pre>
+     *
+     * @ensures <pre>
+     * |this[srcSlot]| = |#this[srcSlot]| - count
+     * |this[destSlot]| = |#this[destSlot]| + count
+     * </pre>
+     */
+    void splitItems(int srcSlot, int destSlot, int count);
 
     /**
      * Returns position of the first slot in {@code this} at which {@code item}
