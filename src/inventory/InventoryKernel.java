@@ -1,14 +1,16 @@
 package inventory;
+
 import java.util.ArrayList;
 
 import components.standard.Standard;
+import inventory.Inventory.Item;
 
 /**
  * Inventory kernel component with primary methods.
  *
  * @author David Stuckey
  */
-public interface InventoryKernel extends Standard<Inventory> {
+public interface InventoryKernel extends Standard<Inventory>, Iterable<Item> {
 
     /**
      * Adds the Item {@code item} to {@code this} at {@code slot}. If the same
@@ -32,7 +34,7 @@ public interface InventoryKernel extends Standard<Inventory> {
      *
      * @aliases this[slot] will be an alias of item
      */
-    void addItem(int slot, Inventory.Item item);
+    void addItem(int slot, Item item);
 
     /**
      * Remove the Item at {@code slot}. Will return an empty Item if that slot
@@ -48,7 +50,7 @@ public interface InventoryKernel extends Standard<Inventory> {
      *
      * @ensures this[slot] is empty
      */
-    Inventory.Item removeItem(int slot);
+    Item removeItem(int slot);
 
     /**
      * Requires Items that are added to {@code this} to have tag {@code tag} and
@@ -67,7 +69,7 @@ public interface InventoryKernel extends Standard<Inventory> {
      *  all non-empty Items in {@code this} have {@code tag} as a tag
      * </pre>
      */
-    ArrayList<Inventory.Item> restrict(String tag);
+    ArrayList<Item> restrict(String tag);
 
     /**
      * Removes all tag restrictions from {@code this}.
@@ -91,7 +93,7 @@ public interface InventoryKernel extends Standard<Inventory> {
      * @ensures isAllowed = true iff for all tags t in this.restrictions, t is
      *          in item.tags
      */
-    boolean isAllowed(Inventory.Item item);
+    boolean isAllowed(Item item);
 
     /**
      * Returns position of the first slot in the Inventory after position

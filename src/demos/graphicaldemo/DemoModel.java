@@ -3,6 +3,7 @@ package demos.graphicaldemo;
 import java.util.ArrayList;
 
 import inventory.Inventory;
+import inventory.Inventory.Item;
 import inventory.Inventory1;
 
 /** */
@@ -11,10 +12,10 @@ public final class DemoModel {
     //Constants
 
     /** Size of the general inventory. */
-    private static final int INV_SIZE = 12;
+    private static final int INV_SIZE = 11;
 
     /** Size of the consumable-specific inventory. */
-    private static final int USE_SIZE = 4;
+    private static final int USE_SIZE = 3;
 
     /** The indices of each sub-inventory. */
     public enum InvIndices {
@@ -45,9 +46,6 @@ public final class DemoModel {
 
     /** Stored positions in the current or past inventory. */
     private int cursorPos, savedPos;
-
-    /** Number of items to be moved. */
-    private int moveCount;
 
     /** Creates a new DemoModel. */
     public DemoModel() {
@@ -131,6 +129,32 @@ public final class DemoModel {
     }
 
     /**
+     * Returns the current inventory.
+     *
+     * @return the current inventory
+     */
+    public int getCurrentInv() {
+        return this.currentInv;
+    }
+
+    /**
+     * Returns a list of the items in the inventory given by {@code inv}.
+     *
+     * @param inv
+     *            the inventory index to get the names from
+     * @return the names of the inventory's items in order
+     */
+    public ArrayList<String> getItemNames(InvIndices inv) {
+        ArrayList<String> names = new ArrayList<>();
+
+        for (Item i : this.invs.get(inv.ordinal())) {
+            names.add(i.getName());
+        }
+
+        return names;
+    }
+
+    /**
      * Switch which inventory is selected.
      *
      * @param newInv
@@ -157,11 +181,6 @@ public final class DemoModel {
         }
 
         this.savedInv = this.currentInv;
-    }
-
-    public void selectPosSplit() throws ItemRestrictionException {
-
-        //TODO: implement splitting
     }
 
     /**

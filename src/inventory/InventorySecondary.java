@@ -3,7 +3,11 @@ package inventory;
 import java.util.Map;
 import java.util.TreeMap;
 
-/** Layered implementations of secondary methods for Inventory. */
+/**
+ * Layered implementations of secondary methods for Inventory.
+ *
+ * @author David Stuckey
+ */
 public abstract class InventorySecondary implements Inventory {
 
     //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN

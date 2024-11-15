@@ -1,6 +1,9 @@
 package inventory;
+
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
@@ -195,5 +198,52 @@ public class Inventory1 extends InventorySecondary {
         localSrc.slots = this.slots;
 
         this.createNewRep(1);
+    }
+
+    //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
+    @Override
+    public Iterator<Item> iterator() {
+        return new InventoryIterator();
+    }
+
+    /**
+     * Implementation of {@code Iterator} interface for {@code Inventory1}.
+     */
+    private final class InventoryIterator implements Iterator<Item> {
+
+        /** The current index. */
+        private int i;
+
+        /**
+         * Creates a new Iterator.
+         */
+        private InventoryIterator() {
+            this.i = 0;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return this.i < Inventory1.this.size();
+        }
+
+        @Override
+        public Item next() {
+            if (!this.hasNext()) {
+                throw new NoSuchElementException();
+            }
+
+            Item removed = Inventory1.this.removeItem(this.i);
+            Inventory1.this.addItem(this.i, removed);
+            this.i++;
+
+            return removed;
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException(
+                    "remove operation not supported");
+        }
+
     }
 }
