@@ -58,6 +58,7 @@ public final class DemoModel {
         this.armor = new Inventory1(1);
         this.relics = new Inventory1(2);
 
+        this.invs = new ArrayList<>();
         this.invs.add(this.inv);
         this.invs.add(this.usable);
         this.invs.add(this.hands);

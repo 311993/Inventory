@@ -14,10 +14,19 @@ public class DemoView extends JFrame implements KeyListener {
 
     /** The screen dimensions. */
     private final int WIDTH, HEIGHT;
+
     private DemoController controller;
 
+    /** Indices for each tracked key in KEYCODES and keys[]. */
+    private enum KeyIndices {
+        UP, DOWN, LEFT, RIGHT, A, B, X, Y
+    }
+
+    /** KeyCodes for key events. */
+    private static final int[] KEYCODES = { 38, 40, 37, 39, 86, 67, 88, 90 };
+
     /** The input key states. */
-    private boolean keyUp, keyDown, keyLeft, keyRight, keyA, keyB, keyX, keyY;
+    private boolean[] keys;
 
     public DemoView() {
         super("Graphical Inventory Demo");
@@ -36,7 +45,7 @@ public class DemoView extends JFrame implements KeyListener {
         this.getContentPane().setBackground(Color.BLACK);
 
         this.setFocusable(true);
-        this.setUndecorated(true);
+        this.setUndecorated(false);
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setVisible(true);
 
@@ -52,13 +61,25 @@ public class DemoView extends JFrame implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        switch (e.getKeyCode()) {
 
+        this.canvas.paint(this.getGraphics());
+
+        for (int i = 0; i < KEYCODES.length; i++) {
+            if (e.getKeyCode() == KEYCODES[i]) {
+                this.keys[i] = true;
+            }
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
+
+        for (int i = 0; i < KEYCODES.length; i++) {
+            if (e.getKeyCode() == KEYCODES[i]) {
+                this.keys[i] = false;
+            }
+        }
+
     }
 
     public void registerObserver(DemoController controller) {
