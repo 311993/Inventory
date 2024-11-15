@@ -52,30 +52,53 @@ public final class DemoModel {
     public DemoModel() {
 
         this.inv = new Inventory1(INV_SIZE);
-        this.usable = new Inventory1(USE_SIZE);
-        this.hands = new Inventory1(2);
-        this.armor = new Inventory1(1);
-        this.relics = new Inventory1(2);
 
-        //TODO: add tag restrictions to non-general inventories
+        this.usable = new Inventory1(USE_SIZE);
+        this.usable.restrict("USE");
+
+        this.hands = new Inventory1(2);
+        this.hands.restrict("WEAPON");
+
+        this.armor = new Inventory1(1);
+        this.armor.restrict("ARMOR");
+
+        this.relics = new Inventory1(2);
+        this.relics.restrict("RELIC");
+
         //TODO: add proper items
 
         for (int i = 0; i < this.inv.size(); i++) {
-            this.inv.addItem(i, new BasicItem("FOO"));
+            if (i % 2 == 0) {
+                Item m = new BasicItem("#POTION");
+                m.putTag("USE", 0);
+                this.inv.addItem(i, m);
+            } else {
+                Item m = new BasicItem("'DIRK");
+                m.putTag("WEAPON", 0);
+                this.inv.addItem(i, m);
+            }
         }
 
         for (int i = 0; i < this.usable.size(); i++) {
-            this.usable.addItem(i, new BasicItem("BAR"));
+            Item m = new BasicItem("#ELIXIR");
+            m.putTag("USE", 0);
+            this.usable.addItem(i, m);
         }
 
         for (int i = 0; i < this.hands.size(); i++) {
-            this.hands.addItem(i, new BasicItem("FIZZ"));
+            Item m = new BasicItem("&SWORD");
+            m.putTag("WEAPON", 0);
+            this.hands.addItem(i, m);
         }
 
-        this.armor.addItem(0, new BasicItem("BUZZ"));
+        Item n = new BasicItem("$MAIL");
+        n.putTag("ARMOR", 0);
+        this.armor.addItem(0, n);
 
         for (int i = 0; i < this.relics.size(); i++) {
-            this.relics.addItem(i, new BasicItem("GNOME"));
+            Item m = new BasicItem("%ARMLET");
+            m.putTag("RELIC", 0);
+            this.relics.addItem(i, m);
         }
 
         this.invs = new ArrayList<>();
@@ -100,7 +123,9 @@ public final class DemoModel {
         Inventory dest = this.invs.get(this.currentInv);
         Inventory src = this.invs.get(this.savedInv);
 
-        if (!dest.isAllowed(src.getItem(this.savedPos))) {
+        if (!dest.isAllowed(src.getItem(this.savedPos))
+                || !src.isAllowed(dest.getItem(this.cursorPos))) {
+            this.unselectPos();
             throw new ItemRestrictionException();
         }
 
@@ -190,11 +215,55 @@ public final class DemoModel {
      *            the inventory index to get the names from
      * @return the names of the inventory's items in order
      */
-    public ArrayList<String> getItemNames(InvIndices inv) {
+    public ArrayList<String> getItemLabels(InvIndices inv) {
         ArrayList<String> names = new ArrayList<>();
 
         for (Item i : this.invs.get(inv.ordinal())) {
-            names.add(i.getName());
+
+            String label = "";
+
+            switch (inv) {
+                case GENERAL:
+                case USABLE:
+                    int count = i.tagValue(Item.COUNT);
+                    final int radix = 10;
+
+                    label += count;
+
+                    label += " ";
+
+                    if (count < radix) {
+                        label += " ";
+                    }
+
+                    if (i.getName().length() > 0) {
+                        label += i.getName().charAt(0);
+                    } else {
+                        label = label.substring(1);
+                    }
+                    break;
+
+                case HANDS:
+                    if (i.getName().length() > 0) {
+                        label += i.getName().charAt(0);
+                    } else {
+                        label += "&";
+                    }
+                    label += "  ";
+
+                    break;
+                case ARMOR:
+                    label += "$  ";
+                    break;
+                case RELICS:
+                    label += "%  ";
+                    break;
+                default:
+            }
+            if (i.getName().length() > 0) {
+                label += i.getName().substring(1);
+            }
+            names.add(label);
         }
 
         return names;
@@ -229,7 +298,8 @@ public final class DemoModel {
         this.savedInv = this.currentInv;
     }
 
-    //TODO:Implement splitting?, otherwise disable stacking
+    //TODO:Implement splitting
+    //TODO:Implement autosend
 
     /**
      * Reset cursor position.

@@ -28,7 +28,7 @@ public class DemoController {
     private static final int ROW2_Y = 128;
 
     /** Horizontal and verical item text offset. */
-    private static final int ITEM_OFFSET_X = 32, ITEM_OFFSET_Y = 44;
+    private static final int ITEM_OFFSET_X = 24, ITEM_OFFSET_Y = 44;
 
     /** The horizontal offset of the cursor from the item text. */
     private static final int CURSOR_OFFSET = 12;
@@ -54,7 +54,7 @@ public class DemoController {
         try {
             this.model.selectPosMove();
         } catch (ItemRestrictionException e) {
-            //TODO:Notify user somehow
+            //TODO:Notify user somehow?
         }
 
         this.updateView();
@@ -140,7 +140,7 @@ public class DemoController {
         if (this.model.getCurrentInv().equals(InvIndices.GENERAL)) {
 
             if (this.model.getCursorPos() < this.model
-                    .getItemNames(InvIndices.GENERAL).size() / 2) {
+                    .getItemLabels(InvIndices.GENERAL).size() / 2) {
 
                 this.model.changeInv(InvIndices.HANDS);
 
@@ -162,21 +162,21 @@ public class DemoController {
         this.view.placeBox("General", 0, 0, WIDTH / CELLSIZE / 2,
                 HEIGHT / CELLSIZE - 2);
 
-        ArrayList<String> names = this.model.getItemNames(InvIndices.GENERAL);
+        ArrayList<String> names = this.model.getItemLabels(InvIndices.GENERAL);
         this.view.placeItems(names, ITEM_OFFSET_X, ITEM_OFFSET_Y);
 
         //Equipment Box
         this.view.placeBox("Equipment", WIDTH / CELLSIZE / 2, 0,
                 WIDTH / CELLSIZE / 2, (HEIGHT - ROW2_Y) / CELLSIZE);
 
-        names = this.model.getItemNames(InvIndices.HANDS);
+        names = this.model.getItemLabels(InvIndices.HANDS);
         this.view.placeItems(names, WIDTH / 2 + ITEM_OFFSET_X, ITEM_OFFSET_Y);
 
-        names = this.model.getItemNames(InvIndices.ARMOR);
+        names = this.model.getItemLabels(InvIndices.ARMOR);
         this.view.placeItems(names, WIDTH / 2 + ITEM_OFFSET_X,
                 ITEM_OFFSET_Y + CELLSIZE * 2);
 
-        names = this.model.getItemNames(InvIndices.RELICS);
+        names = this.model.getItemLabels(InvIndices.RELICS);
         this.view.placeItems(names, WIDTH / 2 + ITEM_OFFSET_X,
                 ITEM_OFFSET_Y + CELLSIZE * (2 + 1));
 
@@ -184,7 +184,7 @@ public class DemoController {
         this.view.placeBox("Usable", WIDTH / CELLSIZE / 2, ROW2_Y / CELLSIZE,
                 WIDTH / CELLSIZE / 2, (HEIGHT - ROW2_Y) / CELLSIZE - 2);
 
-        names = this.model.getItemNames(InvIndices.USABLE);
+        names = this.model.getItemLabels(InvIndices.USABLE);
         this.view.placeItems(names, WIDTH / 2 + ITEM_OFFSET_X,
                 ROW2_Y + ITEM_OFFSET_Y);
 

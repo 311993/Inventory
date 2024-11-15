@@ -65,8 +65,6 @@ public class DemoView extends JFrame implements KeyListener {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    //TODO: Display item counts if splitting is implemented
-
     /**
      * Displays a vertical list of item names on the canvas at {@code (x,y)}.
      *
@@ -120,7 +118,7 @@ public class DemoView extends JFrame implements KeyListener {
      *            the y position at which to place the cursor
      */
     public void placeCursor(int x, int y) {
-        this.canvas.drawText("2", x, y);
+        this.canvas.drawText("\"", x, y);
     }
 
     /** Updates the canvas with any graphical changes. */

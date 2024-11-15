@@ -35,7 +35,13 @@ public class DemoCanvas extends Canvas {
     private BufferedImage font;
 
     /** The index of the default character in the font. */
-    private static final int DEFAULT_TEXT_INDEX = 27;
+    private static final int DEFAULT_TEXT_INDEX = 38;
+
+    /** The index of the zero character in the font. */
+    private static final int NUMBER_TEXT_INDEX = 26;
+
+    /** The special characters used ot encode graphics symbols. */
+    private static final String SPECIAL_CHARS = " !\"#$%&'()";
 
     /**
      * Construct a new DemoCanvas.
@@ -81,9 +87,9 @@ public class DemoCanvas extends Canvas {
 
     /**
      * Writes the text of {@code msg} at {@code (x,y)} in monospaced 8x8 font.
-     * Only alphabetical characters and spaces will render properly. Digits 0-9
-     * encode special graphical symbols (see below). All other characters will
-     * render as unknown text.
+     * Only alphabetical and numerical characters and spaces will render
+     * properly. Characters !"#$%&'() encode special graphical symbols (see
+     * below). All other characters will render as unknown text.
      *
      *
      *
@@ -97,16 +103,15 @@ public class DemoCanvas extends Canvas {
      *            <pre>
      * .
      * Special Characters:
-     *      0: EMPTY
-     *      1: UNKNOWN
-     *      2: CURSOR
-     *      3: BOTTLE
-     *      4: ARMOR
-     *      5: RING
-     *      6: SWORD
-     *      7: DIRK
-     *      8: SPEAR
-     *      9: SHIELD
+     *      !: UNKNOWN
+     *      ": CURSOR
+     *      #: BOTTLE
+     *      $: ARMOR
+     *      %: RING
+     *      &: SWORD
+     *      ': DIRK
+     *      (: SPEAR
+     *      ): SHIELD
      * </pre>
      */
     public void drawText(String msg, int x, int y) {
@@ -123,12 +128,10 @@ public class DemoCanvas extends Canvas {
 
             } else if (Character.isDigit(msg.charAt(i))) {
 
-                offset--;
-                offset += msg.charAt(i) - '0';
+                offset = NUMBER_TEXT_INDEX + msg.charAt(i) - '0';
 
-            } else if (msg.charAt(i) == ' ') {
-
-                offset--;
+            } else if (SPECIAL_CHARS.indexOf(msg.charAt(i)) >= 0) {
+                offset += SPECIAL_CHARS.indexOf(msg.charAt(i));
             }
 
             this.g.drawImage(this.font, x + i * fontSize, y,
