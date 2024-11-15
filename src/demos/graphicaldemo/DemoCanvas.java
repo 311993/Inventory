@@ -4,6 +4,10 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 public class DemoCanvas extends Canvas {
 
@@ -21,6 +25,10 @@ public class DemoCanvas extends Canvas {
 
     /** The graphics context of the screen buffer. */
     private Graphics g;
+
+    private BufferedImage font;
+
+    private static final int DEFAULT_TEXT_INDEX = 27;
 
     /**
      * Construct a new DemoCanvas.
@@ -46,20 +54,104 @@ public class DemoCanvas extends Canvas {
         } else {
             this.ratio = (int) Math.floor(this.WIDTH / SIM_WIDTH);
         }
+
+        try {
+            this.font = ImageIO
+                    .read(new File("src/demos/graphicaldemo/FONT.png"));
+        } catch (IOException e) {
+            System.err.println(e.getLocalizedMessage());
+        }
     }
 
     //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
     @Override
     public void paint(Graphics window) {
 
-        this.drawBox(0, 0, 8, 14);
-        this.drawBox(8, 0, 8, 6);
-        this.drawBox(8, 6, 8, 6);
-        this.drawBox(8, 12, 8, 2);
+        this.drawBox(0, 0, 8, 2);
+        this.drawText(" General", 32, 12);
+        this.drawBox(0, 2, 8, 12);
+
+        this.drawBox(8, 0, 8, 2);
+        this.drawText("Equipment", 160, 12);
+        this.drawBox(8, 2, 8, 6);
+
+        this.drawBox(8, 8, 8, 2);
+        this.drawText(" Usables", 160, 140);
+        this.drawBox(8, 10, 8, 4);
+
+        for (int i = 0; i < 11; i++) {
+            this.drawText("!ABCD WXYZ", 32, 44 + i * 16);
+
+            if (i < 5 || i > 7) {
+                this.drawText("0123456789", 160, 44 + i * 16);
+            }
+        }
 
         window.drawImage(this.buffer, (this.WIDTH - SIM_WIDTH * this.ratio) / 2,
                 (this.HEIGHT - SIM_HEIGHT * this.ratio) / 2,
                 SIM_WIDTH * this.ratio, SIM_HEIGHT * this.ratio, null);
+    }
+
+    /**
+     * Writes the text of {@code msg} at {@code (x,y)} in monospaced 8x8 font.
+     * Only alphabetical characters and spaces will render properly. Digits 0-9
+     * encode special graphical symbols (see below). All other characters will
+     * render as unknown text.
+     *
+     *
+     *
+     * @param msg
+     *            the text to be written
+     * @param x
+     *            the x postion to write at
+     * @param y
+     *            the y position to write at
+     *
+     *            <pre>
+     * .
+     * Special Characters:
+     *      0: EMPTY
+     *      1: UNKNOWN
+     *      2: CURSOR
+     *      3: BOTTLE
+     *      4: ARMOR
+     *      5: RING
+     *      6: SWORD
+     *      7: DIRK
+     *      8: SPEAR
+     *      9: SHIELD
+     * </pre>
+     */
+    public void drawText(String msg, int x, int y) {
+
+        final int fontSize = 8;
+
+        for (int i = 0; i < msg.length(); i++) {
+
+            int offset = DEFAULT_TEXT_INDEX;
+
+            if (Character.isAlphabetic(msg.charAt(i))) {
+
+                offset = Character.toUpperCase(msg.charAt(i)) - 'A';
+
+            } else if (Character.isDigit(msg.charAt(i))) {
+
+                offset--;
+                offset += msg.charAt(i) - '0';
+
+            } else if (msg.charAt(i) == ' ') {
+
+                offset--;
+            }
+
+            this.g.drawImage(this.font, x + i * fontSize, y,
+                    x + (i + 1) * fontSize, y + fontSize,
+                    fontSize * (offset % fontSize),
+                    fontSize * (offset / fontSize),
+                    fontSize * (offset % fontSize + 1),
+                    fontSize * (offset / fontSize + 1), null);
+        }
+
     }
 
     /**
