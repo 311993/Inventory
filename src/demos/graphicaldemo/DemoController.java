@@ -1,5 +1,7 @@
 package demos.graphicaldemo;
 
+import java.util.ArrayList;
+
 import demos.graphicaldemo.DemoModel.InvIndices;
 import demos.graphicaldemo.DemoModel.ItemRestrictionException;
 
@@ -16,6 +18,21 @@ public class DemoController {
     /** The view creator. */
     private DemoView view;
 
+    /** The graphics buffer width and height. */
+    private static final int WIDTH = 256, HEIGHT = 224;
+
+    /** The size of a single grid cell on the display. */
+    private static final int CELLSIZE = 16;
+
+    /** The y-coordinate at which to start the 2nd row of the display. */
+    private static final int ROW2_Y = 128;
+
+    /** Horizontal and verical item text offset. */
+    private static final int ITEM_OFFSET_X = 32, ITEM_OFFSET_Y = 44;
+
+    /** The horizontal offset of the cursor from the item text. */
+    private static final int CURSOR_OFFSET = 12;
+
     /**
      * Creates a new DemoController.
      *
@@ -31,6 +48,7 @@ public class DemoController {
         this.updateView();
     }
 
+    /** A Button Event Response: Select a position for item movement. */
     public void buttonA() {
 
         try {
@@ -42,6 +60,7 @@ public class DemoController {
         this.updateView();
     }
 
+    /** B Button Event Response: Unselect Position. */
     public void buttonB() {
 
         this.model.unselectPos();
@@ -49,6 +68,7 @@ public class DemoController {
         this.updateView();
     }
 
+    /** Up Arrow Event Response: Move Cursor Up. */
     public void up() {
 
         switch (this.model.getCurrentInv()) {
@@ -77,6 +97,7 @@ public class DemoController {
         this.updateView();
     }
 
+    /** Down Arrow Event Response: Move Cursor Down. */
     public void down() {
 
         switch (this.model.getCurrentInv()) {
@@ -104,6 +125,7 @@ public class DemoController {
         this.updateView();
     }
 
+    /** Left Arrow Event Response: Move Cursor Left. */
     public void left() {
         if (!this.model.getCurrentInv().equals(InvIndices.GENERAL)) {
             this.model.changeInv(InvIndices.GENERAL);
@@ -112,6 +134,7 @@ public class DemoController {
         this.updateView();
     }
 
+    /** Right Arrow Event Response: Move Cursor Right. */
     public void right() {
 
         if (this.model.getCurrentInv().equals(InvIndices.GENERAL)) {
@@ -129,29 +152,93 @@ public class DemoController {
         this.updateView();
     }
 
+    /**
+     * Updates the client view to match the current state of the model. That is,
+     * it repaints the canvas based on the model's contents.
+     */
     private void updateView() {
 
-        this.view.placeBoxes();
-        this.view.placeItems();
+        //General Box
+        this.view.placeBox("General", 0, 0, WIDTH / CELLSIZE / 2,
+                HEIGHT / CELLSIZE - 2);
 
-        int x = 148, y = 44 + 16 * this.model.getCursorPos();
+        ArrayList<String> names = this.model.getItemNames(InvIndices.GENERAL);
+        this.view.placeItems(names, ITEM_OFFSET_X, ITEM_OFFSET_Y);
+
+        //Equipment Box
+        this.view.placeBox("Equipment", WIDTH / CELLSIZE / 2, 0,
+                WIDTH / CELLSIZE / 2, (HEIGHT - ROW2_Y) / CELLSIZE);
+
+        names = this.model.getItemNames(InvIndices.HANDS);
+        this.view.placeItems(names, WIDTH / 2 + ITEM_OFFSET_X, ITEM_OFFSET_Y);
+
+        names = this.model.getItemNames(InvIndices.ARMOR);
+        this.view.placeItems(names, WIDTH / 2 + ITEM_OFFSET_X,
+                ITEM_OFFSET_Y + CELLSIZE * 2);
+
+        names = this.model.getItemNames(InvIndices.RELICS);
+        this.view.placeItems(names, WIDTH / 2 + ITEM_OFFSET_X,
+                ITEM_OFFSET_Y + CELLSIZE * (2 + 1));
+
+        //Usables Box
+        this.view.placeBox("Usable", WIDTH / CELLSIZE / 2, ROW2_Y / CELLSIZE,
+                WIDTH / CELLSIZE / 2, (HEIGHT - ROW2_Y) / CELLSIZE - 2);
+
+        names = this.model.getItemNames(InvIndices.USABLE);
+        this.view.placeItems(names, WIDTH / 2 + ITEM_OFFSET_X,
+                ROW2_Y + ITEM_OFFSET_Y);
+
+        //Current Cursor
+        int x = WIDTH / 2 + ITEM_OFFSET_X - CURSOR_OFFSET;
+        int y = ITEM_OFFSET_Y;
 
         switch (this.model.getCurrentInv()) {
             case GENERAL:
-                x = 20;
+                x = ITEM_OFFSET_X - CURSOR_OFFSET;
             case HANDS:
                 break;
             case USABLE:
-                y += 80;
+                y = ROW2_Y + ITEM_OFFSET_Y;
+                break;
             case RELICS:
-                y += 16;
+                y += CELLSIZE;
             case ARMOR:
-                y += 32;
-
+                y += 2 * CELLSIZE;
+            default:
         }
-        System.out.println(y);
+
+        y += CELLSIZE * this.model.getCursorPos();
+
         this.view.placeCursor(x, y);
 
+        //Saved Cursor
+
+        if (this.model.getSavedPos() >= 0) {
+            x = WIDTH / 2 + ITEM_OFFSET_X - CURSOR_OFFSET;
+            y = ITEM_OFFSET_Y;
+
+            switch (this.model.getSavedInv()) {
+                case GENERAL:
+                    x = ITEM_OFFSET_X - CURSOR_OFFSET;
+                case HANDS:
+                    break;
+                case USABLE:
+                    y = ROW2_Y + ITEM_OFFSET_Y;
+                    break;
+                case RELICS:
+                    y += CELLSIZE;
+                case ARMOR:
+                    y += 2 * CELLSIZE;
+                default:
+            }
+
+            y += CELLSIZE * this.model.getSavedPos();
+
+            this.view.placeCursor(x, y);
+
+        }
+
+        //Update canvas
         this.view.render();
     }
 }

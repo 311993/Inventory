@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
@@ -30,6 +31,12 @@ public class DemoView extends JFrame implements KeyListener {
 
     /** KeyCodes for key events. */
     private static final int[] KEYCODES = { 38, 40, 37, 39, 86, 67, 88, 90 };
+
+    /** Vertical header text offset. */
+    private static final int HEADER_OFFSET = 12;
+
+    /** The size of a single grid cell on the display. */
+    private static final int CELLSIZE = 16;
 
     /** Create a new DemoView. */
     public DemoView() {
@@ -58,34 +65,54 @@ public class DemoView extends JFrame implements KeyListener {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    /** Places the item text in the canvas. */
-    public void placeItems() {
-        for (int i = 0; i < 11; i++) {
-            this.canvas.drawText("!ABCD WXYZ", 32, 44 + i * 16);
+    //TODO: Display item counts if splitting is implemented
 
-            if (i < 5 || i > 7) {
-                this.canvas.drawText("0123456789", 160, 44 + i * 16);
-            }
+    /**
+     * Displays a vertical list of item names on the canvas at {@code (x,y)}.
+     *
+     * @param names
+     *            the list of item names to display
+     * @param x
+     *            the x position to display the names at
+     * @param y
+     *            the y position to display the names at
+     */
+    public void placeItems(ArrayList<String> names, int x, int y) {
+
+        for (int i = 0; i < names.size(); i++) {
+            this.canvas.drawText(names.get(i), x, y + i * CELLSIZE);
         }
     }
 
-    /** Places the menu boxes in the canvas. */
-    public void placeBoxes() {
-        this.canvas.drawBox(0, 0, 8, 2);
-        this.canvas.drawText(" General", 32, 12);
-        this.canvas.drawBox(0, 2, 8, 12);
+    /**
+     * Places a menu box in the canvas with label {@code header} at
+     * {@code (x,y)}. The box be {@code width}cells wide and will have a 2 cell
+     * tall header block over a column block {@code length} cells tall.
+     *
+     * @param header
+     *            the header label for the box
+     * @param colX
+     *            the x position of the box's column in cells
+     * @param headerY
+     *            the y position of the column's header block in cells
+     * @param width
+     *            the width of the box
+     * @param length
+     *            the vertical length of the box's column
+     */
+    public void placeBox(String header, int colX, int headerY, int width,
+            int length) {
 
-        this.canvas.drawBox(8, 0, 8, 2);
-        this.canvas.drawText("Equipment", 160, 12);
-        this.canvas.drawBox(8, 2, 8, 6);
+        final int headerX = (CELLSIZE * width - 8 * header.length()) / 2;
 
-        this.canvas.drawBox(8, 8, 8, 2);
-        this.canvas.drawText(" Usables", 160, 140);
-        this.canvas.drawBox(8, 10, 8, 4);
+        this.canvas.drawBox(colX, headerY, width, 2);
+        this.canvas.drawText(header, colX * CELLSIZE + headerX,
+                headerY * CELLSIZE + HEADER_OFFSET);
+        this.canvas.drawBox(colX, headerY + 2, width, length);
     }
 
     /**
-     * Places the cursor in the canvas at (x,y).
+     * Places the cursor in the canvas at {@code (x,y)}.
      *
      * @param x
      *            the x position at which to place the cursor
@@ -101,12 +128,12 @@ public class DemoView extends JFrame implements KeyListener {
         this.canvas.paint(this.canvas.getGraphics());
     }
 
-    //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
     @Override
     public void keyTyped(KeyEvent e) {
         //Do nothing
     }
 
+    //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
     @Override
     public void keyPressed(KeyEvent e) {
 

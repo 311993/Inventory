@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import inventory.Inventory;
 import inventory.Inventory.Item;
 import inventory.Inventory1;
+import inventory.InventorySecondary.BasicItem;
 
 /** */
 public final class DemoModel {
@@ -55,6 +56,27 @@ public final class DemoModel {
         this.hands = new Inventory1(2);
         this.armor = new Inventory1(1);
         this.relics = new Inventory1(2);
+
+        //TODO: add tag restrictions to non-general inventories
+        //TODO: add proper items
+
+        for (int i = 0; i < this.inv.size(); i++) {
+            this.inv.addItem(i, new BasicItem("FOO"));
+        }
+
+        for (int i = 0; i < this.usable.size(); i++) {
+            this.usable.addItem(i, new BasicItem("BAR"));
+        }
+
+        for (int i = 0; i < this.hands.size(); i++) {
+            this.hands.addItem(i, new BasicItem("FIZZ"));
+        }
+
+        this.armor.addItem(0, new BasicItem("BUZZ"));
+
+        for (int i = 0; i < this.relics.size(); i++) {
+            this.relics.addItem(i, new BasicItem("GNOME"));
+        }
 
         this.invs = new ArrayList<>();
         this.invs.add(this.inv);
@@ -135,12 +157,30 @@ public final class DemoModel {
     }
 
     /**
+     * Returns the saved cursor position.
+     *
+     * @return the saved cursor position
+     */
+    public int getSavedPos() {
+        return this.savedPos;
+    }
+
+    /**
      * Returns the current inventory.
      *
      * @return the current inventory
      */
     public InvIndices getCurrentInv() {
         return InvIndices.values()[this.currentInv];
+    }
+
+    /**
+     * Returns the saved inventory.
+     *
+     * @return the saved inventory
+     */
+    public InvIndices getSavedInv() {
+        return InvIndices.values()[this.savedInv];
     }
 
     /**
@@ -188,6 +228,8 @@ public final class DemoModel {
 
         this.savedInv = this.currentInv;
     }
+
+    //TODO:Implement splitting?, otherwise disable stacking
 
     /**
      * Reset cursor position.
