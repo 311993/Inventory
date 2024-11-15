@@ -1,6 +1,7 @@
 package demos.graphicaldemo;
 
 import demos.graphicaldemo.DemoModel.InvIndices;
+import demos.graphicaldemo.DemoModel.ItemRestrictionException;
 
 /**
  * The controller of the graphical inventory demo model and view creator.
@@ -32,10 +33,18 @@ public class DemoController {
 
     public void buttonA() {
 
+        try {
+            this.model.selectPosMove();
+        } catch (ItemRestrictionException e) {
+            //TODO:Notify user somehow
+        }
+
         this.updateView();
     }
 
     public void buttonB() {
+
+        this.model.unselectPos();
 
         this.updateView();
     }

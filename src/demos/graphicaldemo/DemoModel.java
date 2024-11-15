@@ -78,12 +78,12 @@ public final class DemoModel {
         Inventory dest = this.invs.get(this.currentInv);
         Inventory src = this.invs.get(this.savedInv);
 
-        if (!dest.isAllowed(null)) {
+        if (!dest.isAllowed(src.getItem(this.savedPos))) {
             throw new ItemRestrictionException();
         }
 
         String destName = dest.getItem(this.cursorPos).getName();
-        String srcName = dest.getItem(this.cursorPos).getName();
+        String srcName = src.getItem(this.savedPos).getName();
 
         if (destName.equals(srcName)) {
             if (dest == src) {
@@ -193,10 +193,13 @@ public final class DemoModel {
      * Reset cursor position.
      */
     public void unselectPos() {
-        this.cursorPos = this.savedPos;
-        this.savedPos = -1;
 
-        this.currentInv = this.savedInv;
+        if (this.savedPos >= 0) {
+            this.cursorPos = this.savedPos;
+            this.savedPos = -1;
+
+            this.currentInv = this.savedInv;
+        }
     }
 
     /**
