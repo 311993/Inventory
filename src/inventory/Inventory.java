@@ -94,7 +94,6 @@ public interface Inventory extends InventoryKernel {
      *
      * @param src
      *            the Inventory to transfer from
-     *
      * @param srcSlot
      *            the slot in {@code src} to transfer from
      * @param destSlot
@@ -112,8 +111,11 @@ public interface Inventory extends InventoryKernel {
     void transferItem(Inventory src, int srcSlot, int destSlot);
 
     /**
-     * Moves some of the Items at {@code srcSlot} to {@code destSlot}.
+     * Moves some of the Items at {@code srcSlot} to the unoccupied slot
+     * {@code destSlot}.
      *
+     * @param src
+     *            the Inventory to transfer from
      * @param srcSlot
      *            the slot in {@code this} to take from
      * @param destSlot
@@ -123,19 +125,19 @@ public interface Inventory extends InventoryKernel {
      * @updates this
      *
      * @requires <pre>
-     * 0 <= srcSlot < |this|
+     * 0 <= srcSlot < |src|
      * 0 <= destSlot < |this|
-     * srcSlot != destSlot,
-     * 0 <= |this[srcSlot]| <= count
-     * this[destSlot] = empty OR this[destSlot].name = this[srcSlot].name
+     * 0 <= |src[srcSlot]| <= count
+     * this[destSlot] = empty
+     * this.isAllowed(src[srcSlot])
      * </pre>
      *
      * @ensures <pre>
-     * |this[srcSlot]| = |#this[srcSlot]| - count
+     * |src[srcSlot]| = |#src[srcSlot]| - count
      * |this[destSlot]| = |#this[destSlot]| + count
      * </pre>
      */
-    void splitItems(int srcSlot, int destSlot, int count);
+    void splitItem(Inventory src, int srcSlot, int destSlot, int count);
 
     /**
      * Returns position of the first slot in {@code this} at which {@code item}

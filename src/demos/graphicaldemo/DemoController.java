@@ -80,7 +80,14 @@ public class DemoController {
     public void buttonX() {
 
         if (!this.model.isInMessage()) {
-            //TODO:SPLITTING
+            try {
+                this.model.selectPosSplit();
+                if (this.model.getSavedPos() >= 0) {
+                    this.model.sendMessage("Split Count: ");
+                }
+            } catch (ItemRestrictionException e) {
+                this.model.sendMessage("CANNOT SPLIT THERE");
+            }
         } else {
             this.model.clearMessage();
         }
@@ -125,6 +132,8 @@ public class DemoController {
 
                 default: //Will not occur
             }
+        } else {
+            this.model.incrementCount();
         }
         this.updateView();
     }
@@ -154,6 +163,8 @@ public class DemoController {
 
                 default: //Will not occur
             }
+        } else {
+            this.model.decrementCount();
         }
         this.updateView();
     }

@@ -83,21 +83,31 @@ public abstract class InventorySecondary implements Inventory {
 
     //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
     @Override
-    public void splitItems(int srcSlot, int destSlot, int count) {
+    public void splitItem(Inventory src, int srcSlot, int destSlot, int count) {
 
-        assert srcSlot >= 0 && srcSlot < this.size();
+        assert srcSlot >= 0 && srcSlot < src.size();
         assert destSlot >= 0 && destSlot < this.size();
-        assert this.getItem(srcSlot).tagValue(Item.COUNT) <= count;
+        assert 0 <= count && count <= src.getItem(srcSlot).tagValue(Item.COUNT);
+        assert this.getItem(destSlot).isEmpty();
 
-        Item oldStack = this.removeItem(srcSlot);
-        Item newStack = new BasicItem(oldStack.getName());
+        if (count > 0) {
+            Item oldStack = src.removeItem(srcSlot);
+            Item newStack = new BasicItem(oldStack.getName());
 
-        for (String tag : oldStack.getTags().keySet()) {
-            newStack.putTag(tag, oldStack.tagValue(tag));
+            for (String tag : oldStack.getTags().keySet()) {
+                newStack.putTag(tag, oldStack.tagValue(tag));
+            }
+
+            newStack.putTag(Item.COUNT, count);
+            int newCount = oldStack.tagValue(Item.COUNT) - count;
+
+            if (newCount > 0) {
+                oldStack.putTag(Item.COUNT, newCount);
+                src.addItem(srcSlot, oldStack);
+            }
+
+            this.addItem(destSlot, newStack);
         }
-
-        newStack.putTag(Item.COUNT, count);
-        oldStack.putTag(Item.COUNT, oldStack.tagValue(Item.COUNT) - count);
     }
 
     //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN

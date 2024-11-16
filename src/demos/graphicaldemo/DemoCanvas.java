@@ -110,7 +110,7 @@ public class DemoCanvas extends Canvas {
         line++;
         this.drawText("C GO BACK", offsetX, offsetY + line * cellSize);
         line++;
-        this.drawText("X SPLIT STACK", offsetX, offsetY + line * cellSize);
+        this.drawText("X SPLIT HERE", offsetX, offsetY + line * cellSize);
         line++;
         this.drawText("Z AUTO SEND", offsetX, offsetY + line * cellSize);
 

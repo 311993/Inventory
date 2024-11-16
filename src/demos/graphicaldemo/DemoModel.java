@@ -59,6 +59,9 @@ public final class DemoModel {
     /** Number of items to transfer in a split. */
     private int count;
 
+    /** Whether a splitting process is occuring. */
+    private boolean splitting;
+
     /** Creates a new DemoModel. */
     public DemoModel() {
 
@@ -125,8 +128,9 @@ public final class DemoModel {
         this.savedPos = -1;
 
         this.inMessage = false;
-        this.count = 1;
+        this.count = -1;
         this.message = "";
+        this.splitting = false;
     }
 
     /**
@@ -162,6 +166,18 @@ public final class DemoModel {
                 dest.swapItems(src, this.savedPos, this.cursorPos);
             }
         }
+    }
+
+    /**
+     * Splits the item at the saved cursor position with the current cursor
+     * position.
+     */
+    private void splitItem() {
+        Inventory dest = this.invs.get(this.currentInv);
+        Inventory src = this.invs.get(this.savedInv);
+
+        dest.splitItem(src, this.savedPos, this.cursorPos, this.count);
+
     }
 
     /**
@@ -312,6 +328,14 @@ public final class DemoModel {
      */
     public void clearMessage() {
         this.inMessage = false;
+
+        if (this.splitting) {
+            this.splitItem();
+            this.savedPos = -1;
+            this.savedInv = this.currentInv;
+            this.splitting = false;
+            this.count = -1;
+        }
     }
 
     /**
@@ -331,7 +355,30 @@ public final class DemoModel {
      * @return the message to be displayed
      */
     public String getMessage() {
-        return this.message;
+
+        String msg = this.message;
+
+        if (this.count >= 0) {
+            msg += this.count;
+        }
+
+        return msg;
+    }
+
+    /** Increments the number of items to split. */
+    public void incrementCount() {
+        if (this.savedPos >= 0 && this.count < this.invs.get(this.savedInv)
+                .getItem(this.savedPos).tagValue(Item.COUNT)) {
+            this.count++;
+        }
+
+    }
+
+    /** Decrements the number of items to split. */
+    public void decrementCount() {
+        if (this.count > 0) {
+            this.count--;
+        }
     }
 
     /**
@@ -339,6 +386,7 @@ public final class DemoModel {
      * exists.
      *
      * @throws ItemRestrictionException
+     *             when the selected position is invalid
      */
     public void selectPosMove() throws ItemRestrictionException {
 
@@ -352,7 +400,30 @@ public final class DemoModel {
         this.savedInv = this.currentInv;
     }
 
-    //TODO:Implement splitting
+    /**
+     * Initiate stack splitting if a saved position exists.
+     *
+     * @throws ItemRestrictionException
+     *             when the selected position is invalid
+     */
+    public void selectPosSplit() throws ItemRestrictionException {
+
+        if (this.savedPos >= 0) {
+
+            Inventory dest = this.invs.get(this.currentInv);
+            Inventory src = this.invs.get(this.savedInv);
+
+            if (!dest.isAllowed(src.getItem(this.savedPos))
+                    || src.getItem(this.savedPos).isEmpty()
+                    || !dest.getItem(this.cursorPos).isEmpty()) {
+                this.unselectPos();
+                throw new ItemRestrictionException();
+            }
+
+            this.splitting = true;
+            this.count = 0;
+        }
+    }
 
     /**
      * Send the item at the cursor position to the first valid position in a
