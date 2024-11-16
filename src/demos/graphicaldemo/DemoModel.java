@@ -23,6 +23,26 @@ public final class DemoModel {
         GENERAL, USABLE, HANDS, ARMOR, RELICS
     };
 
+    //Initial Contents
+
+    /** Initial general inventory. */
+    private static final String[] GEN_INIT = { "#Potion", "#Fenix", "&Atma", "",
+            "'Dirk", "(Lance", "$Mythril", "", "%Memento", "%Diadem",
+            "#Potion" };
+    /** Initial general tags. */
+    private static final String[] GEN_TAGS = { "USE", "USE", "WEAPON", "",
+            "WEAPON", "WEAPON", "ARMOR", "", "RELIC", "RELIC", "USE" };
+
+    /** Initial usable inventory. */
+    private static final String[] USABLE_INIT = { "#Elixir", "#Fenix",
+            "#Hero" };
+    /** Initial hands inventory. */
+    private static final String[] HANDS_INIT = { "&Falchion", ")Shield" };
+    /** Initial armor inventory. */
+    private static final String[] ARMOR_INIT = { "$Force" };
+    /** Initial relic inventory. */
+    private static final String[] RELICS_INIT = { "%Sprint", "%Armlet" };
+
     //Inventories
 
     /** The general inventory. */
@@ -65,56 +85,65 @@ public final class DemoModel {
     /** Creates a new DemoModel. */
     public DemoModel() {
 
+        //General inventory
         this.inv = new Inventory1(INV_SIZE);
 
+        final int maxCount = 49;
+
+        for (int i = 0; i < this.inv.size(); i++) {
+
+            int count = 1;
+            if (GEN_TAGS[i].equals("USE")) {
+                count = 1 + (int) (Math.random() * maxCount);
+            }
+
+            Item m = new BasicItem(GEN_INIT[i], count);
+            m.putTag(GEN_TAGS[i], 0);
+            this.inv.addItem(i, m);
+        }
+
+        //Usable inventory
         this.usable = new Inventory1(USE_SIZE);
         this.usable.restrict("USE");
 
-        this.hands = new Inventory1(2);
-        this.hands.restrict("WEAPON");
-
-        this.armor = new Inventory1(1);
-        this.armor.restrict("ARMOR");
-
-        this.relics = new Inventory1(2);
-        this.relics.restrict("RELIC");
-
-        //TODO: add proper items
-
-        for (int i = 0; i < this.inv.size(); i++) {
-            if (i % 2 == 0) {
-                Item m = new BasicItem("#POTION");
-                m.putTag("USE", 0);
-                this.inv.addItem(i, m);
-            } else {
-                Item m = new BasicItem("'DIRK");
-                m.putTag("WEAPON", 0);
-                this.inv.addItem(i, m);
-            }
-        }
-
         for (int i = 0; i < this.usable.size(); i++) {
-            Item m = new BasicItem("#ELIXIR");
+            int count = 1 + (int) (Math.random() * maxCount);
+            Item m = new BasicItem(USABLE_INIT[i], count);
             m.putTag("USE", 0);
             this.usable.addItem(i, m);
         }
 
+        //Hands inventory
+        this.hands = new Inventory1(2);
+        this.hands.restrict("WEAPON");
+
         for (int i = 0; i < this.hands.size(); i++) {
-            Item m = new BasicItem("&SWORD");
+            Item m = new BasicItem(HANDS_INIT[i], 1);
             m.putTag("WEAPON", 0);
             this.hands.addItem(i, m);
         }
 
-        Item n = new BasicItem("$MAIL");
-        n.putTag("ARMOR", 0);
-        this.armor.addItem(0, n);
+        //Armor inventory
+        this.armor = new Inventory1(1);
+        this.armor.restrict("ARMOR");
+
+        for (int i = 0; i < this.armor.size(); i++) {
+            Item m = new BasicItem(ARMOR_INIT[i], 1);
+            m.putTag("ARMOR", 0);
+            this.armor.addItem(i, m);
+        }
+
+        //Relic inventory
+        this.relics = new Inventory1(2);
+        this.relics.restrict("RELIC");
 
         for (int i = 0; i < this.relics.size(); i++) {
-            Item m = new BasicItem("%ARMLET");
+            Item m = new BasicItem(RELICS_INIT[i], 1);
             m.putTag("RELIC", 0);
             this.relics.addItem(i, m);
         }
 
+        //Add inventories to the list
         this.invs = new ArrayList<>();
         this.invs.add(this.inv);
         this.invs.add(this.usable);
@@ -122,6 +151,7 @@ public final class DemoModel {
         this.invs.add(this.armor);
         this.invs.add(this.relics);
 
+        //Init state
         this.currentInv = 0;
         this.savedInv = 0;
         this.cursorPos = 0;
