@@ -303,6 +303,56 @@ public class InventoryKernelTest {
         }
     }
 
+    /**
+     * Test for addItems() method stacking behavior when adding at same position
+     * with Items with same name but differing tags.
+     */
+    @Test
+    public final void testAddItemStackedMixedTags() {
+
+        //Set up test variables
+        final int invSize = 10;
+        Inventory testInv = this.constructor(invSize);
+
+        Item blankItem = new BasicItem();
+        Item testItem1 = new BasicItem("Foo", 2);
+        Item testItem2 = new BasicItem("Foo", 1);
+        Item expectedItem = new BasicItem("Foo", 2 + 1);
+
+        testItem1.putTag("MATCH", 0);
+        testItem1.putTag("OLD", 0);
+
+        testItem2.putTag("MATCH", 1);
+        testItem2.putTag("NEW", 0);
+
+        expectedItem.putTag("OLD", 0);
+        expectedItem.putTag("MATCH", 1);
+        expectedItem.putTag("NEW", 0);
+
+        final int slot = 1;
+
+        //Call method under test
+        testInv.addItem(slot, testItem1);
+        testInv.addItem(slot, testItem2);
+
+        //Check inventory state is as expected
+        assertEquals(testInv.size(), invSize);
+
+        Item removed;
+
+        for (int i = 0; i < invSize; i++) {
+
+            removed = testInv.removeItem(i);
+
+            if (i == slot) {
+                assertEquals(removed, expectedItem);
+            } else {
+                assertEquals(removed, blankItem);
+            }
+
+        }
+    }
+
     //Tests for removeItem()
 
     /** Test for removeItem() with empty item. */

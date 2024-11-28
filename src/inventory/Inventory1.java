@@ -72,8 +72,8 @@ public class Inventory1 extends InventorySecondary {
         assert 0 <= slot : "Violation of 0 <= slot";
         assert slot < this.slots.length : "Violation of slot < |this|";
         assert item != null : "Violation of item is not null";
-        assert this.slots[slot].isEmpty() || this.slots[slot].equals(
-                item) : "Violation of slot is empty or has an Item of the same name.";
+        assert this.slots[slot].isEmpty() || this.slots[slot].getName().equals(
+                item.getName()) : "Violation of slot is empty or has Item with same name";
         assert this.isAllowed(item) : "Violation of isAllowed(item)";
 
         Item dest = this.slots[slot];
