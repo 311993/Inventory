@@ -16,7 +16,10 @@ public interface InventoryKernel extends Standard<Inventory>, Iterable<Item> {
      * Adds the Item {@code item} to {@code this} at {@code slot}. If the same
      * Item is at the destination, they are stacked (their count is summed). The
      * destination slot must be empty or hold an Item with the same name. The
-     * Item must satisfy the tag restrictions imposed by {@code this}.
+     * Item must satisfy the tag restrictions imposed by {@code this}. Note that
+     * stacking Items of the same name will add the tags of {@code item} to the
+     * existing Item at {@code dest}. If the Item at {@code dest} already has
+     * that tag, its tag value will be overwritten.
      *
      * @param slot
      *            the slot at which to add the Item

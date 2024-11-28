@@ -78,9 +78,18 @@ public class Inventory1 extends InventorySecondary {
 
         Item dest = this.slots[slot];
 
-        if (dest.equals(item)) {
+        if (dest.getName().equals(item.getName())) {
             dest.putTag(Item.COUNT,
                     dest.tagValue(Item.COUNT) + item.tagValue(Item.COUNT));
+
+            for (String tag : item.getTags().keySet()) {
+
+                if (!tag.equals(Item.COUNT)) {
+                    dest.putTag(tag, item.tagValue(tag));
+                }
+
+            }
+
         } else {
             this.slots[slot] = item;
         }

@@ -326,13 +326,37 @@ public abstract class InventorySecondary implements Inventory {
         public boolean equals(Object o) {
             boolean equal = false;
 
-            if (o.getClass().equals(this.getClass())) {
-                equal = ((BasicItem) (o)).name.equals(this.name);
-            } else if (o.getClass().equals(String.class)) {
-                equal = this.name.equals((String) o);
+            if (o != null) {
+                if (o.getClass().equals(this.getClass())) {
+
+                    BasicItem i = (BasicItem) o;
+
+                    equal = i.name.equals(this.name);
+
+                    for (String tag : this.tags.keySet()) {
+
+                        if (tag != Item.COUNT) {
+                            equal &= i.hasTag(tag)
+                                    && i.tagValue(tag) == this.tagValue(tag);
+                        }
+                    }
+                }
             }
 
             return equal;
+        }
+
+        //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
+        @Override
+        public String toString() {
+
+            String rep = this.name + ":{";
+
+            for (String tag : this.tags.keySet()) {
+                rep += "(" + tag + ", " + this.tags.get(tag) + "), ";
+            }
+
+            return rep.substring(0, rep.length() - 1) + "}";
         }
     }
 }

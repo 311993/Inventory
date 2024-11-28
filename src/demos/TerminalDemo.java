@@ -10,7 +10,9 @@ public class TerminalDemo {
     }
 
     public static void main(String[] args) {
-        /******* Demo 1: Collating items from one Inventory to another. *******/
+        /*******
+         * Demo 1: Collating items from one Inventory to another.
+         *******/
         System.out.println(
                 "Demo 1: Collating items from one Inventory to another.\n");
 
@@ -81,7 +83,7 @@ public class TerminalDemo {
         reference.addItem(2, food);
         reference.addItem(three, mallet);
 
-        //Add items to in-use inventory based on those defined in reference inventory
+        //Add items to in-use inventory based on those defined in reference
         Inventory hotbar = new Inventory1(ten);
         hotbar.copyItem(reference, "Mallet", 0);
         hotbar.copyItem(reference, "Food", 1);
@@ -90,16 +92,6 @@ public class TerminalDemo {
         hotbar.copyItem(reference, "Medicine", hotbar.size() - 1);
 
         //Display what is in the in-use inventory
-        System.out.println("Items in In-Use Inventory:\n");
-
-        for (int i = 0; i < hotbar.size(); i++) {
-            System.out.printf("Item in slot %d is %s.\n", i,
-                    hotbar.getItem(i).getName());
-            System.out.printf("\tIs a tool? : %b\n",
-                    hotbar.getItem(i).hasTag("tool"));
-            System.out.printf("\tIs consumable? : %b\n",
-                    hotbar.getItem(i).hasTag("consumable"));
-            System.out.println();
-        }
+        System.out.println(hotbar);
     }
 }
