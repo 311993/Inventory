@@ -1,4 +1,8 @@
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
 
 import org.junit.Test;
 
@@ -7,6 +11,11 @@ import inventory.Inventory.Item;
 import inventory.Inventory1;
 import inventory.InventorySecondary.BasicItem;
 
+/**
+ * Test array for Inventory kernel methods, as implemented in Inventory1.
+ *
+ * @author David Stuckey
+ */
 public class InventoryKernelTest {
 
     /**
@@ -53,7 +62,7 @@ public class InventoryKernelTest {
         Inventory testInv = this.constructor();
 
         assertEquals(testInv.size(), 1);
-        assertEquals(testInv.isAllowed(new BasicItem()), true);
+        assertTrue(testInv.isAllowed(new BasicItem()));
     }
 
     /** Test for int constructor with minimum size. */
@@ -63,7 +72,7 @@ public class InventoryKernelTest {
         Inventory testInv = this.constructor(1);
 
         assertEquals(testInv.size(), 1);
-        assertEquals(testInv.isAllowed(new BasicItem()), true);
+        assertTrue(testInv.isAllowed(new BasicItem()));
     }
 
     /** Test for int constructor with larger size. */
@@ -74,7 +83,7 @@ public class InventoryKernelTest {
         Inventory testInv = this.constructor(invSize);
 
         assertEquals(testInv.size(), invSize);
-        assertEquals(testInv.isAllowed(new BasicItem()), true);
+        assertTrue(testInv.isAllowed(new BasicItem()));
     }
 
     //Test for size()
@@ -526,6 +535,248 @@ public class InventoryKernelTest {
 
         assertEquals(testInv, expectedInv);
         assertEquals(actualPos, expectedPos);
+    }
+
+    /* Combined tests for restrict() and isAllowed(). */
+
+    /** Test for isAllowed() with an unrestricted inventory. */
+    @Test
+    public final void testIsAllowedUnrestricted() {
+        Inventory testInv = this.constructor();
+        Inventory refInv = this.constructor();
+
+        Item blankItem = new BasicItem();
+        Item namedItem = new BasicItem("Foo");
+        Item taggedItem = new BasicItem("Bar", 2);
+        taggedItem.putTag("TEST", 0);
+
+        assertTrue(testInv.isAllowed(blankItem));
+        assertTrue(testInv.isAllowed(namedItem));
+        assertTrue(testInv.isAllowed(taggedItem));
+        assertEquals(testInv, refInv);
+    };
+
+    /**
+     * Test for isAllowed() and restrict() with a single restriction on the
+     * inventory.
+     */
+    @Test
+    public final void testIsAllowedOneRestriction() {
+        Inventory testInv = this.constructor();
+        Inventory refInv = this.constructor();
+
+        Item blankItem = new BasicItem();
+        Item namedItem = new BasicItem("Foo");
+
+        Item wrongTag = new BasicItem("Bar", 2);
+        wrongTag.putTag("WRONG", 0);
+
+        Item exactMatch = new BasicItem("Lorem", 2);
+        exactMatch.putTag("TEST", 0);
+
+        Item addedTags = new BasicItem("Ipsum", 2);
+        addedTags.putTag("TEST", 0);
+        addedTags.putTag("MORE", 0);
+
+        ArrayList<Item> removed = testInv.restrict("TEST");
+        assertEquals(testInv, refInv);
+
+        assertTrue(testInv.isAllowed(blankItem));
+        assertFalse(testInv.isAllowed(namedItem));
+        assertFalse(testInv.isAllowed(wrongTag));
+        assertTrue(testInv.isAllowed(exactMatch));
+        assertTrue(testInv.isAllowed(addedTags));
+        assertEquals(testInv, refInv);
+        assertEquals(removed.size(), 0);
+    };
+
+    /**
+     * Test for isAllowed() and restrict() with multiple restrictions on the
+     * inventory.
+     */
+    @Test
+    public final void testIsAllowedTwoRestrictions() {
+        Inventory testInv = this.constructor();
+        Inventory refInv = this.constructor();
+
+        Item blankItem = new BasicItem();
+        Item namedItem = new BasicItem("Foo");
+
+        Item wrongTag = new BasicItem("Bar", 2);
+        wrongTag.putTag("WRONG", 0);
+
+        Item exactMatch = new BasicItem("Lorem", 2);
+        exactMatch.putTag("TEST", 0);
+        exactMatch.putTag("RESTRICT", 0);
+
+        Item addedTags = new BasicItem("Ipsum", 2);
+        addedTags.putTag("TEST", 0);
+        addedTags.putTag("RESTRICT", 0);
+        addedTags.putTag("MORE", 0);
+
+        Item notEnoughTags = new BasicItem("Dolor", 2);
+        notEnoughTags.putTag("TEST", 0);
+
+        ArrayList<Item> removed1 = testInv.restrict("TEST");
+        ArrayList<Item> removed2 = testInv.restrict("RESTRICT");
+        assertEquals(testInv, refInv);
+
+        assertTrue(testInv.isAllowed(blankItem));
+        assertFalse(testInv.isAllowed(namedItem));
+        assertFalse(testInv.isAllowed(wrongTag));
+        assertFalse(testInv.isAllowed(notEnoughTags));
+        assertTrue(testInv.isAllowed(exactMatch));
+        assertTrue(testInv.isAllowed(addedTags));
+        assertEquals(testInv, refInv);
+        assertEquals(removed1.size(), 0);
+        assertEquals(removed2.size(), 0);
+    };
+
+    /**
+     * Test for restrict() with items already in the inventory.
+     */
+    @Test
+    public final void testRestrictFilledInventory() {
+
+        final int invSize = 4;
+
+        Inventory testInv = this.constructor(invSize);
+        Inventory expectedInv = this.constructor(invSize);
+
+        testInv.addItem(1, new BasicItem("Foo"));
+
+        Item rightTag = new BasicItem("Bar");
+        rightTag.putTag("TEST", 0);
+
+        Item rightTag2 = new BasicItem("Bar");
+        rightTag2.putTag("TEST", 0);
+
+        testInv.addItem(2, rightTag);
+        expectedInv.addItem(2, rightTag2);
+
+        Item wrongTag = new BasicItem("Lorem");
+        wrongTag.putTag("WRONG", 0);
+
+        Item wrongTag2 = new BasicItem("Lorem");
+        wrongTag2.putTag("WRONG", 0);
+
+        testInv.addItem(invSize - 1, wrongTag);
+
+        ArrayList<Item> removed = testInv.restrict("TEST");
+
+        assertEquals(testInv, expectedInv);
+
+        assertEquals(removed.size(), 2);
+        assertEquals(removed.get(0), new BasicItem("Foo"));
+        assertEquals(removed.get(1), wrongTag2);
+        assertTrue(testInv.isAllowed(rightTag2));
+        assertFalse(testInv.isAllowed(wrongTag2));
+    }
+
+    /* Tests for freeRestrictions() */
+
+    /** Test for freeRestrictions() on an unrestricted inventory. */
+    @Test
+    public final void testFreeRestrictionsUnrestricted() {
+        Inventory testInv = this.constructor();
+        Inventory refInv = this.constructor();
+
+        Item blankItem = new BasicItem();
+        Item namedItem = new BasicItem("Foo");
+        Item taggedItem = new BasicItem("Bar", 2);
+        taggedItem.putTag("TEST", 0);
+
+        assertTrue(testInv.isAllowed(blankItem));
+        assertTrue(testInv.isAllowed(namedItem));
+        assertTrue(testInv.isAllowed(taggedItem));
+
+        testInv.freeRestrictions();
+
+        assertTrue(testInv.isAllowed(blankItem));
+        assertTrue(testInv.isAllowed(namedItem));
+        assertTrue(testInv.isAllowed(taggedItem));
+        assertEquals(testInv, refInv);
+    }
+
+    /** Test for freeRestrictions() on a singly-restricted inventory. */
+    @Test
+    public final void testFreeRestrictionsOneRestriction() {
+        Inventory testInv = this.constructor();
+        Inventory refInv = this.constructor();
+
+        Item blankItem = new BasicItem();
+        Item namedItem = new BasicItem("Foo");
+        Item wrongTag = new BasicItem("Bar", 2);
+        wrongTag.putTag("WRONG", 0);
+
+        Item exactMatch = new BasicItem("Lorem", 2);
+        exactMatch.putTag("TEST", 0);
+
+        Item addedTags = new BasicItem("Ipsum", 2);
+        addedTags.putTag("TEST", 0);
+        addedTags.putTag("MORE", 0);
+
+        testInv.restrict("TEST");
+
+        assertTrue(testInv.isAllowed(blankItem));
+        assertFalse(testInv.isAllowed(namedItem));
+        assertFalse(testInv.isAllowed(wrongTag));
+        assertTrue(testInv.isAllowed(exactMatch));
+        assertTrue(testInv.isAllowed(addedTags));
+
+        testInv.freeRestrictions();
+
+        assertTrue(testInv.isAllowed(blankItem));
+        assertTrue(testInv.isAllowed(namedItem));
+        assertTrue(testInv.isAllowed(wrongTag));
+        assertTrue(testInv.isAllowed(exactMatch));
+        assertTrue(testInv.isAllowed(addedTags));
+        assertEquals(testInv, refInv);
+    }
+
+    /** Test for freeRestrictions() on a doubly-restricted inventory. */
+    @Test
+    public final void testFreeRestrictionsTwoRestrictions() {
+        Inventory testInv = this.constructor();
+        Inventory refInv = this.constructor();
+
+        Item blankItem = new BasicItem();
+        Item namedItem = new BasicItem("Foo");
+
+        Item wrongTag = new BasicItem("Bar", 2);
+        wrongTag.putTag("WRONG", 0);
+
+        Item exactMatch = new BasicItem("Lorem", 2);
+        exactMatch.putTag("TEST", 0);
+        exactMatch.putTag("RESTRICT", 0);
+
+        Item addedTags = new BasicItem("Ipsum", 2);
+        addedTags.putTag("TEST", 0);
+        addedTags.putTag("RESTRICT", 0);
+        addedTags.putTag("MORE", 0);
+
+        Item notEnoughTags = new BasicItem("Dolor", 2);
+        notEnoughTags.putTag("TEST", 0);
+
+        testInv.restrict("TEST");
+        testInv.restrict("RESTRICT");
+
+        assertTrue(testInv.isAllowed(blankItem));
+        assertFalse(testInv.isAllowed(namedItem));
+        assertFalse(testInv.isAllowed(wrongTag));
+        assertFalse(testInv.isAllowed(notEnoughTags));
+        assertTrue(testInv.isAllowed(exactMatch));
+        assertTrue(testInv.isAllowed(addedTags));
+
+        testInv.freeRestrictions();
+
+        assertTrue(testInv.isAllowed(blankItem));
+        assertTrue(testInv.isAllowed(namedItem));
+        assertTrue(testInv.isAllowed(wrongTag));
+        assertTrue(testInv.isAllowed(notEnoughTags));
+        assertTrue(testInv.isAllowed(exactMatch));
+        assertTrue(testInv.isAllowed(addedTags));
+        assertEquals(testInv, refInv);
     }
 
 }

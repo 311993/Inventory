@@ -118,7 +118,7 @@ public class Inventory1 extends InventorySecondary {
 
         for (int i = 0; i < this.slots.length; i++) {
 
-            if (!this.slots[i].hasTag(tag)) {
+            if (!this.slots[i].hasTag(tag) && !this.slots[i].isEmpty()) {
 
                 removed.add(this.slots[i]);
                 this.slots[i] = new BasicItem();
