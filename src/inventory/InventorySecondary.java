@@ -129,8 +129,8 @@ public abstract class InventorySecondary implements Inventory {
             if (pos >= 0) {
 
                 //Make sure the stack is not full
-                if (maxStack <= 0
-                        || this.getItem(pos).tagValue(Item.COUNT) < maxStack) {
+                if (maxStack <= 0 || this.getItem(pos).tagValue(Item.COUNT)
+                        + item.tagValue(Item.COUNT) <= maxStack) {
 
                     doneCheckingStacks = true;
                 } else {
@@ -140,6 +140,7 @@ public abstract class InventorySecondary implements Inventory {
             }
             if (pos < 0 || checkAt >= this.size() - 1) {
                 doneCheckingStacks = true;
+                pos = -1;
             }
         }
 
@@ -229,12 +230,11 @@ public abstract class InventorySecondary implements Inventory {
 
         for (int i = 0; i < this.size(); i++) {
             Item removed = this.removeItem(i);
-            rep += removed.toString() + ", ";
+            rep += removed.toString() + "; ";
             this.addItem(i, removed);
         }
 
-        rep += " }";
-        return rep;
+        return rep.substring(0, rep.length() - 2) + " }";
     }
 
     /**
@@ -364,7 +364,7 @@ public abstract class InventorySecondary implements Inventory {
                 rep += "(" + tag + ", " + this.tags.get(tag) + "), ";
             }
 
-            return rep.substring(0, rep.length() - 1) + "}";
+            return rep.substring(0, rep.length() - 2) + " }";
         }
     }
 }
