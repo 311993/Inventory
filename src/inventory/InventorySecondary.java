@@ -159,9 +159,17 @@ public abstract class InventorySecondary implements Inventory {
 
         Item removed = this.removeItem(slot);
 
-        removed.putTag(Item.COUNT, removed.tagValue(Item.COUNT) - 1);
+        int newCount = removed.tagValue(Item.COUNT) - 1;
 
-        this.addItem(slot, removed);
+        if (newCount > 0) {
+
+            removed.putTag(Item.COUNT, removed.tagValue(Item.COUNT) - 1);
+
+            this.addItem(slot, removed);
+
+        } else {
+            this.addItem(slot, new BasicItem());
+        }
 
         return removed.getName();
     }

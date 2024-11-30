@@ -779,4 +779,146 @@ public class InventoryKernelTest {
         assertEquals(testInv, refInv);
     }
 
+    /* Tests for Standard methods */
+
+    /** Test for clear() with an empty inventory of size one. */
+    public final void testClearEmptyOne() {
+
+        Inventory testInv = this.constructor();
+        Inventory expectedInv = this.constructor();
+
+        testInv.clear();
+
+        assertEquals(testInv, expectedInv);
+    }
+
+    /** Test for clear() with a filled inventory of size one. */
+    public final void testClearFilledOne() {
+
+        Inventory testInv = this.constructor("Foo");
+        Inventory expectedInv = this.constructor();
+
+        testInv.clear();
+
+        assertEquals(testInv, expectedInv);
+    }
+
+    /** Test for clear() with an empty inventory of size ten. */
+    public final void testClearEmptyTen() {
+
+        final int invSize = 10;
+
+        Inventory testInv = this.constructor(invSize);
+        Inventory expectedInv = this.constructor();
+
+        testInv.clear();
+
+        assertEquals(testInv, expectedInv);
+    }
+
+    /** Test for clear() with a filled inventory of size ten. */
+    public final void testClearFilledTen() {
+
+        Inventory testInv = this.constructor("A", "B", "C", "D", "E", "F", "G",
+                "H", "I", "J");
+        Inventory expectedInv = this.constructor();
+
+        testInv.clear();
+
+        assertEquals(testInv, expectedInv);
+    }
+
+    /** Test for newInstance() from empty inventory. */
+    public final void testNewInstanceEmpty() {
+
+        Inventory refInv = this.constructor();
+        Inventory expectedRefInv = this.constructor();
+
+        Inventory newInv = refInv.newInstance();
+        Inventory expectedNewInv = this.constructor();
+
+        assertEquals(refInv, expectedRefInv);
+        assertEquals(newInv, expectedNewInv);
+    }
+
+    /** Test for newInstance() from non-empty inventory. */
+    public final void testNewInstanceFilled() {
+
+        Inventory refInv = this.constructor("A", "B", "C", "D", "E", "F", "G",
+                "H", "I", "J");
+        Inventory expectedRefInv = this.constructor("A", "B", "C", "D", "E",
+                "F", "G", "H", "I", "J");
+
+        Inventory newInv = refInv.newInstance();
+        Inventory expectedNewInv = this.constructor();
+
+        assertEquals(refInv, expectedRefInv);
+        assertEquals(newInv, expectedNewInv);
+    }
+
+    /** Test for transferFrom() with two empty inventories. */
+    public final void testTransferFromEmptyToEmpty() {
+
+        Inventory refInv = this.constructor();
+        Inventory expectedRefInv = this.constructor();
+
+        Inventory newInv = this.constructor();
+        Inventory expectedNewInv = this.constructor();
+
+        newInv.transferFrom(refInv);
+
+        assertEquals(refInv, expectedRefInv);
+        assertEquals(newInv, expectedNewInv);
+    }
+
+    /** Test for transferFrom() from filled to empty inventory. */
+    public final void testTransferFromEmptyToFilled() {
+
+        Inventory refInv = this.constructor();
+        Inventory expectedRefInv = this.constructor();
+
+        Inventory newInv = this.constructor("A", "B", "C", "D", "E", "F", "G",
+                "H", "I", "J");
+        Inventory expectedNewInv = this.constructor();
+
+        newInv.transferFrom(refInv);
+
+        assertEquals(refInv, expectedRefInv);
+        assertEquals(newInv, expectedNewInv);
+    }
+
+    /** Test for transferFrom() with two empty inventories. */
+    public final void testTransferFromFilledToEmpty() {
+
+        Inventory refInv = this.constructor("A", "B", "C", "D", "E", "F", "G",
+                "H", "I", "J");
+        Inventory expectedRefInv = this.constructor();
+
+        Inventory newInv = this.constructor();
+        Inventory expectedNewInv = this.constructor("A", "B", "C", "D", "E",
+                "F", "G", "H", "I", "J");
+
+        newInv.transferFrom(refInv);
+
+        assertEquals(refInv, expectedRefInv);
+        assertEquals(newInv, expectedNewInv);
+    }
+
+    /** Test for transferFrom() with two empty inventories. */
+    public final void testTransferFromFilledToFilled() {
+
+        Inventory refInv = this.constructor("A", "B", "C", "D", "E", "F", "G",
+                "H", "I", "J");
+        Inventory expectedRefInv = this.constructor();
+
+        Inventory newInv = this.constructor("X", "Y", "Z");
+        Inventory expectedNewInv = this.constructor("A", "B", "C", "D", "E",
+                "F", "G", "H", "I", "J");
+
+        newInv.transferFrom(refInv);
+
+        assertEquals(refInv, expectedRefInv);
+        assertEquals(newInv, expectedNewInv);
+    }
+
 }
