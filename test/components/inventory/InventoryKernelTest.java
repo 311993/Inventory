@@ -1,4 +1,4 @@
-package components;
+package components.inventory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -8,9 +8,7 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-import components.inventory.Inventory;
 import components.inventory.Inventory.Item;
-import components.inventory.Inventory1;
 import components.inventory.InventorySecondary.BasicItem;
 
 /**

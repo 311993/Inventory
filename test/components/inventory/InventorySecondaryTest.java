@@ -1,4 +1,4 @@
-package components;
+package components.inventory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -6,9 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import components.inventory.Inventory;
 import components.inventory.Inventory.Item;
-import components.inventory.Inventory1;
 import components.inventory.InventorySecondary.BasicItem;
 
 /**
