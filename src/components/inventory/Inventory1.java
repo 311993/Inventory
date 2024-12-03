@@ -1,4 +1,4 @@
-package inventory;
+package components.inventory;
 
 import java.util.ArrayList;
 import java.util.HashSet;

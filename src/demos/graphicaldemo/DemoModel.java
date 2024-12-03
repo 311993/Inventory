@@ -2,10 +2,10 @@ package demos.graphicaldemo;
 
 import java.util.ArrayList;
 
-import inventory.Inventory;
-import inventory.Inventory.Item;
-import inventory.Inventory1;
-import inventory.InventorySecondary.BasicItem;
+import components.inventory.Inventory;
+import components.inventory.Inventory.Item;
+import components.inventory.Inventory1;
+import components.inventory.InventorySecondary.BasicItem;
 
 /** */
 public final class DemoModel {

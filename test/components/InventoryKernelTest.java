@@ -1,3 +1,5 @@
+package components;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -6,10 +8,10 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-import inventory.Inventory;
-import inventory.Inventory.Item;
-import inventory.Inventory1;
-import inventory.InventorySecondary.BasicItem;
+import components.inventory.Inventory;
+import components.inventory.Inventory.Item;
+import components.inventory.Inventory1;
+import components.inventory.InventorySecondary.BasicItem;
 
 /**
  * Test array for Inventory kernel methods, as implemented in Inventory1.

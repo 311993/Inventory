@@ -4,10 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import inventory.Inventory;
-import inventory.Inventory.Item;
-import inventory.Inventory1;
-import inventory.InventorySecondary.BasicItem;
+import components.inventory.Inventory;
+import components.inventory.Inventory.Item;
+import components.inventory.Inventory1;
+import components.inventory.InventorySecondary.BasicItem;
 
 /**
  * Demo of inventory component representing an inventory management system for a
@@ -109,6 +109,51 @@ public final class InventoryManager {
     }
 
     /**
+     * Get multiline string display for inventory {@code inv}. Format for each
+     * item will be: <pre>
+     *  #) name : count | tag1 (val1) | ...
+     * </pre>Count and tags will be ommited if {@code namesOnly} is true.
+     *
+     * @param inv
+     *            - the inventory to get a display for
+     * @param namesOnly
+     *            - whether or not to only include item names
+     * @return a multiline string display of the inventory that can be directly
+     *         written to the command line or a file
+     */
+    private static String getInventoryDisplay(Inventory inv,
+            boolean namesOnly) {
+
+        String display = "";
+        Item temp;
+
+        for (int i = 0; i < inv.size(); i++) {
+
+            temp = inv.getItem(i);
+
+            display += "\t" + i + ") " + temp.getName();
+
+            if (!namesOnly) {
+
+                display += " : " + temp.tagValue(Item.COUNT);
+
+                for (String tag : temp.getTags().keySet()) {
+                    if (tag != Item.COUNT) {
+
+                        display += "\t| " + tag + "(" + temp.tagValue(tag)
+                                + ")";
+
+                    }
+                }
+            }
+
+            display += "\n";
+        }
+
+        return display;
+    }
+
+    /**
      * The main method.
      *
      * @param args
@@ -131,11 +176,7 @@ public final class InventoryManager {
         while (!quitProgram) {
 
             System.out.println("Current Inventory:\n");
-
-            for (int i = 0; i < shelf.size(); i++) {
-                System.out.println("\t" + shelf.getItem(i).getName() + " : "
-                        + shelf.getItem(i).tagValue(Item.COUNT));
-            }
+            System.out.println(getInventoryDisplay(shelf, false));
 
             System.out.println("\n Do what?: \n" + "\t0) Add Items to Shelf\n"
                     + "\t1) Sell Items off Shelf\n"
@@ -149,11 +190,7 @@ public final class InventoryManager {
                 case add:
 
                     System.out.println("Select item to add from Catalog:\n");
-
-                    for (int i = 0; i < catalog.size(); i++) {
-                        System.out.println(
-                                "\t" + i + ") " + catalog.getItem(i).getName());
-                    }
+                    System.out.println(getInventoryDisplay(catalog, true));
 
                     int catalogSlot = getInputOption(in, catalogSize);
                     String itemName = catalog.getItem(catalogSlot).getName();
@@ -190,12 +227,7 @@ public final class InventoryManager {
                 case sell:
 
                     System.out.println("Which slot to sell from?:\n");
-
-                    for (int i = 0; i < shelf.size(); i++) {
-                        System.out.println("\t" + i + ") "
-                                + shelf.getItem(i).getName() + " : "
-                                + shelf.getItem(i).tagValue(Item.COUNT));
-                    }
+                    System.out.println(getInventoryDisplay(shelf, false));
 
                     int shelfSlot = getInputOption(in, shelfSize);
                     System.out.println("Sell how Many?\n");
@@ -231,12 +263,7 @@ public final class InventoryManager {
 
                 case remove:
                     System.out.println("Which slot to remove from?:\n");
-
-                    for (int i = 0; i < shelf.size(); i++) {
-                        System.out.println("\t" + i + ") "
-                                + shelf.getItem(i).getName() + " : "
-                                + shelf.getItem(i).tagValue(Item.COUNT));
-                    }
+                    System.out.println(getInventoryDisplay(shelf, false));
 
                     int shelfSlot2 = getInputOption(in, shelfSize);
 

@@ -1,4 +1,4 @@
-package inventory;
+package components.inventory;
 
 import java.util.Map;
 import java.util.TreeMap;

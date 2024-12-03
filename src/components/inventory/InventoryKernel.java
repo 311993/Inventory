@@ -1,9 +1,9 @@
-package inventory;
+package components.inventory;
 
 import java.util.ArrayList;
 
+import components.inventory.Inventory.Item;
 import components.standard.Standard;
-import inventory.Inventory.Item;
 
 /**
  * Inventory kernel component with primary methods.
