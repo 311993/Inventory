@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Calendar Versioning](https://calver.org/) of
 the following form: YYYY.0M.0D.
 
+##[2024.11.13]
+
+### Added
+- InventoryKernel implementation : Inventory1
+- Method implementations for kernel methods in Inventory1
+- Standard method implementations for Inventory1
+- Convention and correspondence for Inventory1
+
+### Updated
+- restrict kernel method to remove and return newly disallowed items
+
 ##[2024.11.03]
 
 ### Added
