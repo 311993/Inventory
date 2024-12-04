@@ -294,18 +294,23 @@ Take some time to fill them out honestly.
 > complete the portfolio project, how much better (or worse) do you think you
 > understand software development and why?
 
-<!-- TODO: discuss -->
+      I better understand how to design a piece of software from scratch for an intended purpose/audience, thinking
+   about what behaviors would be beneficial for the intended use cases. Much of the portfolio project consisted of
+   defining the behaviors that the component would exhibit, differing from much of the coursework, where the intended
+   behaviors are defined, and must simply be implemented. I also better understand how to design and document software
+   in line with a specific standard since the hierarchy and documentation in this project were implemented according to
+   the OSU software sequence standards.
 
 > Also, did the portfolio project surface any gaps in your own knowledge of
 > software development. If so, what are those gaps and how did you address them?
 
-<!-- TODO: discuss -->
+      Yes, prior to this project I had not worked with nested classes. To address this knowledge gap, I read the java documentation on nested classes and looked at the examples of nested classes in the OSU component library.
 
 > Finally, as a part of completing the portfolio project, to what extent has
 > your perspective of software development changed, if at all? In other words,
 > is software development something you still enjoy? If not, why not?
 
-<!-- TODO: discuss -->
+      My perspective on software development has not changed much. I enjoyed software design and development prior to working on this project, and I still do now.
 
 > One of the challenges of completing the portfolio project is picking up a lot
 > of skills on your own. Some of these skills are, of course, software skills.
@@ -313,29 +318,33 @@ Take some time to fill them out honestly.
 > this process. Therefore, the first question is what skills did you pick up
 > through this process?
 
-<!-- TODO: discuss -->
+      Software skills I developed through this project included documentation, testing, and the design process. Specifically: documenting code according to a specific standard and keeping change logs, writing tests for an implementation with no "reference" to work with, and identifying use cases then designing software behavior based on those desired uses.
+
+      Non-software skills I picked up in this project included reviewing others' work and giving constructive feedback, improving my own work based on feedback and self-analysis, and planning a medium-term project.
 
 > The follow-up question is: could you rephrase these skills you picked up
 > as bullet points that you could put on a resume? Try it below.
 
-<!-- TODO: discuss -->
+   - Use Cases
+   - Software Documentation
+   - JUnit Testing
+   - Revision
+   - Project Planning
 
 > Next, how has working on this project affected your career trajectory?
 > In other words, do you now hate the topic you picked? Or, are you even more
 > interested in it? Both outcomes are valuable to your personal development.
 
-<!-- TODO: discuss -->
+      I am still quite interested in computer graphics and game development, and in software development as a whole. I found the design and implementation portions of this project enjoyable. I especially liked developing my graphical demo since it involved working with graphics and was most directly connected to my career goals.
 
 > Finally, consider the skills you've picked up and your current career
 > trajectory. What are some things you could do to continue on your
 > career trajectory? Also, who are some mentors you could contact to help
 > you stay on your path?
 
-<!-- TODO: discuss -->
+   Next steps towards a career in game development could include learning a game development platform or framework, such as Unreal Engine, Unity, Godot, SDL, or libGDX. I can also continue to work on my in progress game development projects. Mentors that could be helpful include more experienced students, especially those in organizations like the Game Creation Club, as well as faculty that teach courses in or have experience with software, graphics, and project design.
 
 ### Changelog
-
-<!-- TODO: update CHANGELOG then delete this comment -->
 
 At the end of every assignment, you should update the
 [CHANGELOG.md](../../CHANGELOG.md) file found in the root of the project folder.
@@ -370,8 +379,6 @@ like to accomplish that, you will need to make GitHub releases after each pull
 request merge (or at least tag your commits). This is not required.
 
 ### Submission
-
-<!-- TODO: read the submission instructions then delete this comment -->
 
 Assuming that your project is in a GitHub repo somewhere and your changes are on
 a proof-of-concept branch, then what we'll want you to do is create a pull
@@ -422,8 +429,6 @@ PDF to read this rubric as a table).
 If you'd like to give feedback for this assignment (or any assignment, really),
 make use of [this survey][survey]. Your feedback helps make assignments
 better for future students.
-
-<!-- TODO: follow the link to share your feedback then delete this comment -->
 
 [markdown-to-pdf-guide]: https://therenegadecoder.com/blog/how-to-convert-markdown-to-a-pdf-3-quick-solutions/
 [survey]: https://forms.gle/dumXHo6A4Enucdkq9

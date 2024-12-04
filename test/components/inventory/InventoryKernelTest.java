@@ -782,6 +782,7 @@ public class InventoryKernelTest {
     /* Tests for Standard methods */
 
     /** Test for clear() with an empty inventory of size one. */
+    @Test
     public final void testClearEmptyOne() {
 
         Inventory testInv = this.constructor();
@@ -793,6 +794,7 @@ public class InventoryKernelTest {
     }
 
     /** Test for clear() with a filled inventory of size one. */
+    @Test
     public final void testClearFilledOne() {
 
         Inventory testInv = this.constructor("Foo");
@@ -804,6 +806,7 @@ public class InventoryKernelTest {
     }
 
     /** Test for clear() with an empty inventory of size ten. */
+    @Test
     public final void testClearEmptyTen() {
 
         final int invSize = 10;
@@ -817,6 +820,7 @@ public class InventoryKernelTest {
     }
 
     /** Test for clear() with a filled inventory of size ten. */
+    @Test
     public final void testClearFilledTen() {
 
         Inventory testInv = this.constructor("A", "B", "C", "D", "E", "F", "G",
@@ -829,6 +833,7 @@ public class InventoryKernelTest {
     }
 
     /** Test for newInstance() from empty inventory. */
+    @Test
     public final void testNewInstanceEmpty() {
 
         Inventory refInv = this.constructor();
@@ -842,6 +847,7 @@ public class InventoryKernelTest {
     }
 
     /** Test for newInstance() from non-empty inventory. */
+    @Test
     public final void testNewInstanceFilled() {
 
         Inventory refInv = this.constructor("A", "B", "C", "D", "E", "F", "G",
@@ -857,6 +863,7 @@ public class InventoryKernelTest {
     }
 
     /** Test for transferFrom() with two empty inventories. */
+    @Test
     public final void testTransferFromEmptyToEmpty() {
 
         Inventory refInv = this.constructor();
@@ -872,6 +879,7 @@ public class InventoryKernelTest {
     }
 
     /** Test for transferFrom() from filled to empty inventory. */
+    @Test
     public final void testTransferFromEmptyToFilled() {
 
         Inventory refInv = this.constructor();
@@ -888,6 +896,7 @@ public class InventoryKernelTest {
     }
 
     /** Test for transferFrom() with two empty inventories. */
+    @Test
     public final void testTransferFromFilledToEmpty() {
 
         Inventory refInv = this.constructor("A", "B", "C", "D", "E", "F", "G",
@@ -905,6 +914,7 @@ public class InventoryKernelTest {
     }
 
     /** Test for transferFrom() with two empty inventories. */
+    @Test
     public final void testTransferFromFilledToFilled() {
 
         Inventory refInv = this.constructor("A", "B", "C", "D", "E", "F", "G",

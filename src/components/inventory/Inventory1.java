@@ -203,10 +203,10 @@ public class Inventory1 extends InventorySecondary {
 
         Inventory1 localSrc = (Inventory1) src;
 
-        localSrc.reqs = this.reqs;
-        localSrc.slots = this.slots;
+        this.reqs = localSrc.reqs;
+        this.slots = localSrc.slots;
 
-        this.createNewRep(1);
+        localSrc.createNewRep(1);
     }
 
     //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
