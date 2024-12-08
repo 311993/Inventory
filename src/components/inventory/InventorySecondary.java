@@ -1,7 +1,13 @@
+package components.inventory;
+
 import java.util.Map;
 import java.util.TreeMap;
 
-/** Layered implementations of secondary methods for Inventory. */
+/**
+ * Layered implementations of secondary methods for Inventory.
+ *
+ * @author David Stuckey
+ */
 public abstract class InventorySecondary implements Inventory {
 
     //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
@@ -77,6 +83,35 @@ public abstract class InventorySecondary implements Inventory {
 
     //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
     @Override
+    public void splitItem(Inventory src, int srcSlot, int destSlot, int count) {
+
+        assert srcSlot >= 0 && srcSlot < src.size();
+        assert destSlot >= 0 && destSlot < this.size();
+        assert 0 <= count && count <= src.getItem(srcSlot).tagValue(Item.COUNT);
+        assert this.getItem(destSlot).isEmpty();
+
+        if (count > 0) {
+            Item oldStack = src.removeItem(srcSlot);
+            Item newStack = new BasicItem(oldStack.getName());
+
+            for (String tag : oldStack.getTags().keySet()) {
+                newStack.putTag(tag, oldStack.tagValue(tag));
+            }
+
+            newStack.putTag(Item.COUNT, count);
+            int newCount = oldStack.tagValue(Item.COUNT) - count;
+
+            if (newCount > 0) {
+                oldStack.putTag(Item.COUNT, newCount);
+                src.addItem(srcSlot, oldStack);
+            }
+
+            this.addItem(destSlot, newStack);
+        }
+    }
+
+    //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
+    @Override
     public int nextPlacement(Item item, int maxStack) {
 
         assert item != null;
@@ -94,8 +129,8 @@ public abstract class InventorySecondary implements Inventory {
             if (pos >= 0) {
 
                 //Make sure the stack is not full
-                if (maxStack < 0
-                        || this.getItem(pos).tagValue(Item.COUNT) < maxStack) {
+                if (maxStack <= 0 || this.getItem(pos).tagValue(Item.COUNT)
+                        + item.tagValue(Item.COUNT) <= maxStack) {
 
                     doneCheckingStacks = true;
                 } else {
@@ -105,6 +140,7 @@ public abstract class InventorySecondary implements Inventory {
             }
             if (pos < 0 || checkAt >= this.size() - 1) {
                 doneCheckingStacks = true;
+                pos = -1;
             }
         }
 
@@ -124,9 +160,17 @@ public abstract class InventorySecondary implements Inventory {
 
         Item removed = this.removeItem(slot);
 
-        removed.putTag(Item.COUNT, removed.tagValue(Item.COUNT) - 1);
+        int newCount = removed.tagValue(Item.COUNT) - 1;
 
-        this.addItem(slot, removed);
+        if (newCount > 0) {
+
+            removed.putTag(Item.COUNT, removed.tagValue(Item.COUNT) - 1);
+
+            this.addItem(slot, removed);
+
+        } else {
+            this.addItem(slot, new BasicItem());
+        }
 
         return removed.getName();
     }
@@ -186,18 +230,17 @@ public abstract class InventorySecondary implements Inventory {
 
         for (int i = 0; i < this.size(); i++) {
             Item removed = this.removeItem(i);
-            rep += removed.toString() + ", ";
+            rep += removed.toString() + "; ";
             this.addItem(i, removed);
         }
 
-        rep += " }";
-        return rep;
+        return rep.substring(0, rep.length() - 2) + " }";
     }
 
     /**
      * A basic implementation of {@code Item} interface.
      */
-    protected static final class BasicItem implements Item {
+    public static final class BasicItem implements Item {
 
         /** The name of this item, which serves as its primary identifier. */
         private String name;
@@ -291,13 +334,37 @@ public abstract class InventorySecondary implements Inventory {
         public boolean equals(Object o) {
             boolean equal = false;
 
-            if (o.getClass().equals(this.getClass())) {
-                equal = ((BasicItem) (o)).name.equals(this.name);
-            } else if (o.getClass().equals(String.class)) {
-                equal = this.name.equals((String) o);
+            if (o != null) {
+                if (o.getClass().equals(this.getClass())) {
+
+                    BasicItem i = (BasicItem) o;
+
+                    equal = i.name.equals(this.name);
+
+                    for (String tag : this.tags.keySet()) {
+
+                        if (tag != Item.COUNT) {
+                            equal &= i.hasTag(tag)
+                                    && i.tagValue(tag) == this.tagValue(tag);
+                        }
+                    }
+                }
             }
 
             return equal;
+        }
+
+        //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
+        @Override
+        public String toString() {
+
+            String rep = this.name + ":{";
+
+            for (String tag : this.tags.keySet()) {
+                rep += "(" + tag + ", " + this.tags.get(tag) + "), ";
+            }
+
+            return rep.substring(0, rep.length() - 2) + " }";
         }
     }
 }

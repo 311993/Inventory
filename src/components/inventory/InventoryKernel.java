@@ -1,5 +1,8 @@
+package components.inventory;
+
 import java.util.ArrayList;
 
+import components.inventory.Inventory.Item;
 import components.standard.Standard;
 
 /**
@@ -7,13 +10,16 @@ import components.standard.Standard;
  *
  * @author David Stuckey
  */
-public interface InventoryKernel extends Standard<Inventory> {
+public interface InventoryKernel extends Standard<Inventory>, Iterable<Item> {
 
     /**
      * Adds the Item {@code item} to {@code this} at {@code slot}. If the same
      * Item is at the destination, they are stacked (their count is summed). The
      * destination slot must be empty or hold an Item with the same name. The
-     * Item must satisfy the tag restrictions imposed by {@code this}.
+     * Item must satisfy the tag restrictions imposed by {@code this}. Note that
+     * stacking Items of the same name will add the tags of {@code item} to the
+     * existing Item at {@code dest}. If the Item at {@code dest} already has
+     * that tag, its tag value will be overwritten.
      *
      * @param slot
      *            the slot at which to add the Item
@@ -31,7 +37,7 @@ public interface InventoryKernel extends Standard<Inventory> {
      *
      * @aliases this[slot] will be an alias of item
      */
-    void addItem(int slot, Inventory.Item item);
+    void addItem(int slot, Item item);
 
     /**
      * Remove the Item at {@code slot}. Will return an empty Item if that slot
@@ -47,7 +53,7 @@ public interface InventoryKernel extends Standard<Inventory> {
      *
      * @ensures this[slot] is empty
      */
-    Inventory.Item removeItem(int slot);
+    Item removeItem(int slot);
 
     /**
      * Requires Items that are added to {@code this} to have tag {@code tag} and
@@ -66,7 +72,7 @@ public interface InventoryKernel extends Standard<Inventory> {
      *  all non-empty Items in {@code this} have {@code tag} as a tag
      * </pre>
      */
-    ArrayList<Inventory.Item> restrict(String tag);
+    ArrayList<Item> restrict(String tag);
 
     /**
      * Removes all tag restrictions from {@code this}.
@@ -90,7 +96,7 @@ public interface InventoryKernel extends Standard<Inventory> {
      * @ensures isAllowed = true iff for all tags t in this.restrictions, t is
      *          in item.tags
      */
-    boolean isAllowed(Inventory.Item item);
+    boolean isAllowed(Item item);
 
     /**
      * Returns position of the first slot in the Inventory after position

@@ -1,3 +1,5 @@
+package components.inventory;
+
 import java.util.Map;
 
 /**
@@ -92,7 +94,6 @@ public interface Inventory extends InventoryKernel {
      *
      * @param src
      *            the Inventory to transfer from
-     *
      * @param srcSlot
      *            the slot in {@code src} to transfer from
      * @param destSlot
@@ -108,6 +109,35 @@ public interface Inventory extends InventoryKernel {
      * @ensures this[destSlot] = #src[srcSlot], src[srcSlot]=Item.EMPTY
      */
     void transferItem(Inventory src, int srcSlot, int destSlot);
+
+    /**
+     * Moves some of the Items at {@code srcSlot} to the unoccupied slot
+     * {@code destSlot}.
+     *
+     * @param src
+     *            the Inventory to transfer from
+     * @param srcSlot
+     *            the slot in {@code this} to take from
+     * @param destSlot
+     *            the slot in {@code this} to place at
+     * @param count
+     *            the number of Items to move
+     * @updates this
+     *
+     * @requires <pre>
+     * 0 <= srcSlot < |src|
+     * 0 <= destSlot < |this|
+     * 0 <= |src[srcSlot]| <= count
+     * this[destSlot] = empty
+     * this.isAllowed(src[srcSlot])
+     * </pre>
+     *
+     * @ensures <pre>
+     * |src[srcSlot]| = |#src[srcSlot]| - count
+     * |this[destSlot]| = |#this[destSlot]| + count
+     * </pre>
+     */
+    void splitItem(Inventory src, int srcSlot, int destSlot, int count);
 
     /**
      * Returns position of the first slot in {@code this} at which {@code item}

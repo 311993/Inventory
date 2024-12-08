@@ -1,5 +1,9 @@
+package components.inventory;
+
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
@@ -68,15 +72,24 @@ public class Inventory1 extends InventorySecondary {
         assert 0 <= slot : "Violation of 0 <= slot";
         assert slot < this.slots.length : "Violation of slot < |this|";
         assert item != null : "Violation of item is not null";
-        assert this.slots[slot].isEmpty() || this.slots[slot].equals(
-                item) : "Violation of slot is empty or has an Item of the same name.";
+        assert this.slots[slot].isEmpty() || this.slots[slot].getName().equals(
+                item.getName()) : "Violation of slot is empty or has Item with same name";
         assert this.isAllowed(item) : "Violation of isAllowed(item)";
 
         Item dest = this.slots[slot];
 
-        if (dest.equals(item)) {
+        if (dest.getName().equals(item.getName())) {
             dest.putTag(Item.COUNT,
                     dest.tagValue(Item.COUNT) + item.tagValue(Item.COUNT));
+
+            for (String tag : item.getTags().keySet()) {
+
+                if (!tag.equals(Item.COUNT)) {
+                    dest.putTag(tag, item.tagValue(tag));
+                }
+
+            }
+
         } else {
             this.slots[slot] = item;
         }
@@ -105,7 +118,7 @@ public class Inventory1 extends InventorySecondary {
 
         for (int i = 0; i < this.slots.length; i++) {
 
-            if (!this.slots[i].hasTag(tag)) {
+            if (!this.slots[i].hasTag(tag) && !this.slots[i].isEmpty()) {
 
                 removed.add(this.slots[i]);
                 this.slots[i] = new BasicItem();
@@ -190,9 +203,56 @@ public class Inventory1 extends InventorySecondary {
 
         Inventory1 localSrc = (Inventory1) src;
 
-        localSrc.reqs = this.reqs;
-        localSrc.slots = this.slots;
+        this.reqs = localSrc.reqs;
+        this.slots = localSrc.slots;
 
-        this.createNewRep(1);
+        localSrc.createNewRep(1);
+    }
+
+    //CHECKSTYLE: ALLOW THIS METHOD TO BE OVERRIDDEN
+    @Override
+    public Iterator<Item> iterator() {
+        return new InventoryIterator();
+    }
+
+    /**
+     * Implementation of {@code Iterator} interface for {@code Inventory1}.
+     */
+    private final class InventoryIterator implements Iterator<Item> {
+
+        /** The current index. */
+        private int i;
+
+        /**
+         * Creates a new Iterator.
+         */
+        private InventoryIterator() {
+            this.i = 0;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return this.i < Inventory1.this.size();
+        }
+
+        @Override
+        public Item next() {
+            if (!this.hasNext()) {
+                throw new NoSuchElementException();
+            }
+
+            Item removed = Inventory1.this.removeItem(this.i);
+            Inventory1.this.addItem(this.i, removed);
+            this.i++;
+
+            return removed;
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException(
+                    "remove operation not supported");
+        }
+
     }
 }

@@ -6,6 +6,53 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Calendar Versioning](https://calver.org/) of
 the following form: YYYY.0M.0D.
 
+##[2024.12.03]
+
+### Added
+- Readme file for graphical demo.
+- Javadoc html files.
+
+### Updated
+- InventoryManager now displays tags of items.
+- Restructured directories.
+- Completed reflection.
+- Fixed transferFrom() transferring in wrong direction.
+
+##[2024.11.28]
+
+### Added
+- JUnit tests for kernel methods dealing with restrictions
+- JUnit tests for secondary methods
+- JUnit tests for Standard methods
+- InventoryManager terminal demo as a use case.
+
+### Updated
+- restrict() method no longer returns empty items, since they are allowed in any Inventory.
+- useItem() now works correctly for empty items and will replace the last named item in a slot with an empty item rather than leaving that item with count 0.
+- nextPlacement() now correctly enforces max stack parameter.
+
+##[2024.11.28]
+
+### Added
+- JUnit tests for kernel methods not dealing with restrictions
+
+### Updated
+- addItem() kernel method now merges tags of same-name items being stacked. Previously discarded tags of added item.
+
+##[2024.11.15]
+
+### Added
+- Skeleton for command line demo for Inventory component based on the proof of concept demos.
+- Functional (though without all intended features) graphical demo for Inventory component.
+    - Model including Inventories for graphical demo.
+    - View creator for graphical demo.
+        - Canvas for graphical demo display.
+    -Controller for graphical demo.
+- Iterator for Inventory1
+
+### Updated
+- visibility of BasicItem changed to public to allow instantiation outside of the package
+
 ##[2024.11.13]
 
 ### Added
@@ -13,6 +60,7 @@ the following form: YYYY.0M.0D.
 - Method implementations for kernel methods in Inventory1
 - Standard method implementations for Inventory1
 - Convention and correspondence for Inventory1
+- Disallowed hashCode implementation in abstract class
 
 ### Updated
 - restrict kernel method to remove and return newly disallowed items
